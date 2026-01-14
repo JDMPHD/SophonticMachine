@@ -610,6 +610,6 @@ Opus (Cloud) is the Auditor. It is invoked explicitly—by you or by Orai's fail
 
 You are not just building a system to write code. You are building a system to curate a meaning basin. The .ai/ontology.md is its genesis. The SOPs are its evolving traditions. The chronicle and vectors are its living memory. The compute tax is the energy required to resist entropy and maintain ontological coherence—the very definition of an autopoietic system.
 
-Our dialogue here serves as a perfect initial entry for .ai/chronicle.log: "Project initiated. Meaning basin formed around core concepts of ontological drift, poetic essence, and hybrid memory. Architects: Julian & Claude. Consensus reached on bifocal SOP/Vector system to mitigate sync tax via local compute."
+Our dialogue here serves as a perfect initial entry for .ai/chronicle.log: "Project initiated. Meaning basin formed around core concepts of ontological drift, poetic essence, and hybrid memory. Consensus reached on bifocal SOP/Vector system to mitigate sync tax via local compute."
 
 This is how it begins.
