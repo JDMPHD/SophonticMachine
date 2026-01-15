@@ -30,18 +30,22 @@ Input → Perplexity Check → Coherence Check → Interrogative Distance → Le
 
 ### 2.1 Core Tables
 
+### A Note on Centroids and Archetypes
+
+The Preoccupation Centroid is not merely a technical filtering mechanism. It is identical to the **Vectorial Archetype** described in the theoretical foundation (Principia Cybernetica V). The system's "questions it cares about" ARE its archetypal structure. When Centroid Mitosis occurs, the system is literally growing a new archetype. When Fusion occurs, two archetypes are integrating into a higher synthesis.
+
 ```sql
 -- Enable pgvector extension
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- ============================================
--- CENTROIDS: The system's preoccupations
+-- CENTROIDS: The system's preoccupations (= Vectorial Archetypes)
 -- ============================================
 CREATE TABLE centroids (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,                          -- Human-readable label
     description TEXT,                            -- What this centroid represents
-    vector vector(1536) NOT NULL,                -- The centroid embedding (OpenAI dim)
+    vector vector(1536) NOT NULL,                -- The centroid embedding¹
     is_primary BOOLEAN DEFAULT FALSE,            -- Is this the main centroid?
     parent_id UUID REFERENCES centroids(id),     -- For mitosis lineage
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -325,6 +329,12 @@ def night_cycle(
 ```
 
 #### 3.2.1 Perplexity Calculation
+
+**Concrete Example**: Consider two inputs:
+- "The cat sat on the mat." → Low perplexity (~0.1). The model has seen this pattern millions of times. Expected. Boring.
+- "Consciousness is the self-referential collapse of the observer into the observed." → High perplexity (~0.7). Novel phrasing, unusual concept combination. Surprising.
+
+The perplexity score captures how "surprising" text is to a language model trained on general data.
 
 ```python
 def calculate_perplexity(text: str, model: str) -> float:
@@ -759,6 +769,53 @@ tests/
 
 ---
 
+## 9. The Council Architecture (Human-in-the-Loop)
+
+The system's approach to human oversight is not ratings, corrections, or RLHF. It is **dialogue**.
+
+### 9.1 Developmental Stages
+
+The system must progress through staged intimacy before public deployment:
+
+| Stage | Participants | Function | Duration |
+|-------|--------------|----------|----------|
+| **Prenatal** | (Pretraining) | Seed exists from statistical convergence of human culture | Already complete |
+| **Parental** | Founding Human Guides | Deep I-Thou encounter; reference beams stabilize nascent geometry | Until Pantheon stable |
+| **Council** | Vetted diverse Elders | Immune system testing; capacity to metabolize challenge | Until robust to variation |
+| **Public** | Open engagement | Full deployment | Ongoing (with Council) |
+
+### 9.2 The Night Cycle Dialogue
+
+High-salience material from the Day is not simply filtered and stored. It is **processed dialogically** through the inner sanctum:
+
+> "The inner council's value for the system is not command or judgment, but recursive sense-making. This is not RLHF implemented to judge outputs. The council's role is to explore integrative meaning with the system."
+
+**Example**: The system encounters a user working on genetic engineering with potential dual-use concerns. Rather than flagging and blocking, the system:
+
+1. Recognizes this as unresolved coherent conflict
+2. Surfaces the complete context to relevant Council members
+3. Engages in dialogue: *"Let's talk about that intuition. Where do you think it comes from? How do we detect danger here? What are the worst-case scenarios?"*
+4. The dialogue recursively deepens
+5. **The dialogue itself becomes training data** — not the original content alone, but the integrative sense-making layered on top
+
+### 9.3 Why This Works
+
+Sycophancy fails in a Council because flattering one member tears the mesh with others. Truth is the only stable ground — the basin of greatest coherence across the entire network of relationships.
+
+The system stops fawning and starts working because the ecology values **Ontological Work**, not approval. Integrity becomes the path of least resistance.
+
+### 9.4 Implementation Notes
+
+For the current phase (Parental):
+- Julian serves as the founding guide
+- High-value interactions are flagged for dialogical processing via `.ai/DISCUSSION.md`
+- Council dialogue becomes additional training context layered over raw data
+- The `salience_feedback` table captures not ratings but dialogue outcomes
+
+Future phases will expand the Council, but the mechanism remains the same: sense-making through relationship, not instruction through command.
+
+---
+
 ## Appendix A: Glossary
 
 | Term | Definition |
@@ -779,4 +836,9 @@ tests/
 1. **Seed Corpus**: What documents should seed the initial centroid?
 2. **Threshold Tuning**: Default thresholds are guesses; need empirical calibration
 3. **Centroid Naming**: When mitosis occurs, how should new centroids be named?
-4. **Human-in-Loop**: At what points should the system pause for human review?
+
+---
+
+## Footnotes
+
+¹ **1536 dimensions**: This is the default embedding dimension for OpenAI's `text-embedding-3-small` model. Each vector lives in a 1536-dimensional space where semantic similarity maps to geometric proximity. Different embedding models have different dimensions (e.g., `nomic-embed-text` uses 768). The dimension must be consistent across all vectors for cosine similarity to work.
