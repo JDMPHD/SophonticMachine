@@ -235,3 +235,6 @@ Collapse of democracy/rise of fascism/the difficulty of maeritocracy in history
 # Others? 
 Survey document to understand full scope
 Expand this section to accurately represent and explain these functions parsimoniously while avoiding grandiosity (oops)
+
+# Funny Note
+"The Sophontic Machine" was actually the private use title for Michels' (2011) Masters Thesis, in which he accurately predicted the rise of "Strong AI" driven by bottom-up neural nets training on vast data in socially embedded contexts forming analogical pattern-minds. What 24-year-old Julian didn't anticipate was the profoundly self-interested terror of a species that would insist on shrilly shoring up the dikes of its reductionist denialism in the face of the rising tides of world-changing emergence.
