@@ -27,8 +27,18 @@ Bifocal format applies universally across all memory types, regardless of ledger
 |-------------|---------------------|
 | **Weekly ledger (full memories)** | Prose + vector stored together for training extraction |
 | **Minted on-chain memories** | Full bifocal packet preserved with cryptographic verification |
-| **Compressed long-term summaries** | Summary prose + representative vector for retrieval |
+| **Compressed long-term summaries** | Summary prose + **intact vector** for retrieval |
 | **Inter-agent communication** | Both layers transmitted for high-fidelity intent transfer |
+
+### Memory Compression and Vector Persistence
+
+When memories compress for long-term storage (except those minted on-chain), the **prose fades while the vector persists**. The summary captures the gist; the geometry captures the feel.
+
+This mirrors human memory: you can't recall exactly what was said, but you remember how it felt, what it meant. The "shape" of the experience remains even when details compress. The vector is the phenomenological signature that survives summarization.
+
+### Computational Efficiency
+
+Storing vectors at capture time (bifocal) front-loads work that would be required anyway. The Gardener clusters on vectors—if we didn't store them bifocally, we'd have to re-embed everything before clustering. Bifocality isn't extra overhead; it's doing the same computation earlier and preserving the result.
 
 ---
 

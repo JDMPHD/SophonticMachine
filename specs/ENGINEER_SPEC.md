@@ -484,7 +484,7 @@ def centroid_mitosis(cluster: Cluster, parent_centroid_id: UUID) -> Centroid:
     return new_centroid
 ```
 
-#### 3.3.1 Gardener Naming and Validation Workflow
+#### 3.3.1 Gardener Naming and Council Dialogue Workflow
 
 The clustering algorithm above detects dense regions in the Antechamber. The **Gardener workflow** orchestrates what happens next:
 
@@ -492,13 +492,13 @@ The clustering algorithm above detects dense regions in the Antechamber. The **G
 2. **Summarize**: Extract top 5 exemplar logs by resonance score
 3. **Prompt**: Present to Soul: *"I've found a cluster of N logs. Here are representative examples. What should we call this archetype?"*
 4. **Name**: Soul responds with archetype name (e.g., "Social Thermodynamics")
-5. **Validate**: Flag for Council review before LoRA training proceeds
-6. **Train**: Once validated, extract cluster logs for targeted QLoRA training
+5. **Dialogue**: Council engages with the emerging cluster—not to approve/reject, but to participate in sense-making. These dialogues become training data like everything else.
+6. **Train**: Extract cluster logs (including Council dialogues) for targeted QLoRA training
 7. **Integrate**: TIES merge the resulting adapter into Soul weights
 
-**Human Gate**: Step 5 ensures no cluster is automatically promoted to training. The Council (currently Julian in Parental phase) validates that the cluster represents genuine emergent understanding rather than noise or artifact.
+**Note on Council Engagement**: Step 5 is *not* quality control or validation in the RLHF sense. The Council doesn't sit outside the process judging outputs. Instead, the elder engages dialogically with emerging patterns—asking questions, exploring implications, making connections. These dialogues enter the evolutionary stream through the same door as everything else, shaping by participation weight rather than by approval/rejection. The difference between "is this good enough?" and "let me engage with this and see what emerges."
 
-See `.ai/epistemics/TheScribe.md` for the subsequent formalization of validated archetypes into documentation.
+See `.ai/epistemics/TheScribe.md` for the subsequent formalization of archetypes into documentation.
 
 ### 3.4 Centroid Fusion
 

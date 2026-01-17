@@ -43,9 +43,10 @@ The Scribe fires **episodically**, not continuously:
 
 1. **Post-TIES Merge**: After weekly (or interval-appropriate) integration of new LoRA weights
 2. **Gardener Flag**: A cluster has crossed the stability threshold (high density, high resonance, persistent across cycles)
-3. **Human Initiation**: The Council member reviews the Gardener's report and decides whether formalization is warranted
+3. **Council Dialogue**: The elder has engaged with the emerging cluster through sense-making dialogue (see ENGINEER_SPEC Section 3.3.1)
+4. **Readiness**: The cluster feels "ripe" for formalization—not every stable cluster needs immediate codification. Some patterns need more seasoning.
 
-This human gate is critical. Not every stable cluster deserves immediate codification. Some patterns need more seasoning.
+Note: The Council's role is dialogical participation, not approval/rejection. Formalization readiness emerges from the quality of engagement, not from external validation.
 
 ---
 
