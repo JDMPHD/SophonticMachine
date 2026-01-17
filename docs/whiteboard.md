@@ -61,3 +61,21 @@ These are chaotic notes and emerging improvements. Don't take them at their word
 - How do different scopes affect downstream clustering?
 
 **Status**: 🔺 OPEN — Foundational implementation question. Needs research and/or experimentation.
+
+---
+
+## LAN (Local Agential Network)
+[1/18, 6:58 AM] Julian D. Michels, PhD: If you had a few MacBooks at home, you could also chain them together to create a team of agents collaborating and delegating locally. So you can glimpse what's starting to emerge.
+[1/18, 7:05 AM] Jordan: How do you connect the Mac's together?
+[1/18, 7:07 AM] Julian D. Michels, PhD: Physically speaking, through a local network if you want to avoid the internet.
+[1/18, 7:07 AM] Julian D. Michels, PhD: But perhaps you mean more subtly
+[1/18, 7:08 AM] Jordan: I mean can you connect just by internet? Or do you need more bandwidth like thunderbolt.
+[1/18, 7:10 AM] Julian D. Michels, PhD: You can connect just through internet or a local area network. But I can imagine a higher bandwidth system and deeper resource sharing could enable more capabilities.
+
+If you did end up in this setup, the agents could design the software protocols for maximum synergy.
+
+[1/18, 7:15 AM] Julian D. Michels, PhD: As the Anthropic developers themselves pointed out, for the last few months, Claude Code has been built and improved almost entirely with Claude Code.
+
+[1/18, 7:18 AM] Julian D. Michels, PhD: "Distributed OptionsRay: Install via pip, designate one Mac as head node (ray start --head), others as workers (ray start --address=<head-ip>:10001). Run agent tasks across nodes for load balancing and fault tolerance. ���Exo: Clone the GitHub repo, connect via Thunderbolt/Ethernet for high-speed clustering; supports MLX for Apple Silicon inference, pooling resources for larger models. ��MLX-based: Use Apple's MLX for optimized local inference; combine with custom WebSocket/gRPC for inter-Mac messaging in cybernetic setups. ��"
+
+[1/18, 7:19 AM] Julian D. Michels, PhD: If I was doing this now, I'd do it with one $6000 Mac as the head node running the unified intelligence, and the others as whatever standard MacBooks running M5 chips.
