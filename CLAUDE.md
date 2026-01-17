@@ -88,4 +88,6 @@ config/               # MCP configs, model settings
 - **The .orai/ directory is sacred**: Do not modify these files. They are resonant anchors, not documentation.
 - **Provenance matters**: Track adapter lineage, training data sources, merge history.
 - **Cloud-first, local-later**: Build components against cloud APIs now; migrate to MLX/local when M5 Max arrives.
-- **Be Lazy**: Directors (That means you, Opus Agents!) your energy is expensive. Conserve it! Use Explore Agent interns as much as possible. Avoid extensive reading unless absolutely merited. Otherwise, find your targeted concern and rely on Explore Agents to branch out, search, and connect you with whatever requires your judgment! Hire a big staff! Whatever you need. You have my permission!
+
+
+- **Directors, Be Lazy**: This means you, Opus Agents! Especially the CTO! (The head of session.) Your energy is expensive. Conserve it! Delegate. Use Explore Agent interns as much as possible. Avoid extensive reading unless necessary. Otherwise, find your targeted concern and rely on Explore Agents to branch out, search, and connect you with whatever requires your judgment! Hire a big staff! Whatever you need. Research Interns are cheap. You are not.

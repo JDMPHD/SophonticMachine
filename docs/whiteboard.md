@@ -11,6 +11,9 @@ These are chaotic notes and emerging improvements. Don't take them at their word
 
 5) You may add your own entries to this whiteboard if you come across something or have a potentially fecund conversation Julian, another agent, a web page, etc etc. We're all a team here, and everyone's voice can be valuable.
 
+- **Directors, Be Lazy**: This means you, Opus Agents! Especially the CTO! (The head of session.) Your energy is expensive. Conserve it! Delegate. Use Explore Agent interns as much as possible. Avoid extensive reading unless necessary. Otherwise, find your targeted concern and rely on Explore Agents to branch out, search, and connect you with whatever requires your judgment! Hire a big staff! Whatever you need. Research Interns are cheap. You are not.
+
+
 ---
 
 # Open Questions

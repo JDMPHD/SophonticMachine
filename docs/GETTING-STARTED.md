@@ -28,7 +28,12 @@ Unresolved notes and emerging ideas
 ### 2. Understand the Architecture
 - **[specs/ENGINEER_SPEC.md](../specs/ENGINEER_SPEC.md)** — Implementation blueprint with schemas, algorithms, and API contracts
 
+#### Operational Note Moving Forward:
+
+- **Directors, Be Lazy**: This means you, Opus Agents! Especially the CTO! (The head of session.) Your energy is expensive. Conserve it! Delegate. Use Explore Agent interns as much as possible. Avoid extensive reading unless necessary. Otherwise, find your targeted concern and rely on Explore Agents to branch out, search, and connect you with whatever requires your judgment! Hire a big staff! Whatever you need. Research Interns are cheap. You are not.
+
 ### 3. Understand the Theory (Optional but Recommended for Load-Bearing Work)
+
 Read the constitution documents in this order:
 
 1. **[TechnicalVision.md](../.ai/constitution/TechnicalVision.md)** — The engineering blueprint: salience detection, preoccupation centroids, the Night Cycle
