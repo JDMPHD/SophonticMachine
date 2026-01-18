@@ -38,29 +38,27 @@ These are chaotic notes and emerging improvements. Don't take them at their word
 
 ---
 
-## Encounter Parsing (Underspecified)
+## Encounter Parsing → **RESOLVED: Holographic Block Architecture**
 
-**The Gap**: How is a "log" or "encounter" actually parsed into units for assessment? The Night Cycle pipeline assumes an `input_text` arrives and gets scored for perplexity, coherence, and interrogative distance—but the boundary of that input is hand-waved.
+**The Gap**: How is a "log" or "encounter" actually parsed into units for assessment? ✅ **SOLVED**
 
-**The Problem**: We want to rate a "unit" of dialogue for surprisal, coherence, and relevance. But what constitutes that unit?
-- Too small (single message): Loses context, fragments meaning
-- Too large (full session): Loses granularity, averages over diverse content
-- Arbitrary chunks: Cuts across natural thought boundaries
+**The Solution**: **Thermodynamic Segmentation + Multi-Scale Grading** (See: `specs/HOLOGRAPHIC_BLOCK_SPEC.md`)
 
-**Possible Approaches**:
-- Turn pairs (prompt + response)?
-- Thematic exchanges (detected via embedding similarity)?
-- Natural breakpoints (topic shifts, explicit markers)?
-- Hierarchical: score at multiple scales and aggregate?
+**Key Innovations**:
+1. **Flux-Based Boundaries**: Use entropy dynamics (perplexity spike → stabilization) to identify natural resolution arcs
+2. **Variable-Length Units**: From single turns to full multi-turn arcs, dictated by thermodynamics not arbitrary rules
+3. **Dead Zone Compression**: Low-entropy sequences collapsed to summaries, preserving context without bloat
+4. **Multi-Scale Embeddings**: Holographic (full arc) + Atomic (per turn) + Nested (recursive sub-arcs)
+5. **Dual-Stage Filter**: 95% compute savings—only deep-score thermodynamically interesting clips
 
-**Why This Matters**: The salience pipeline's validity depends on the parsing. If units are wrong-sized, perplexity/coherence/relevance scores become meaningless. This is a foundational implementation question.
+**Architectural Components**:
+- **Margins**: +2 turns anterior/posterior for context
+- **Multi-Scale Scoring**: Utterance + Exchange + Theme levels of P×C×ID
+- **Integration**: Holographic Blocks become atomic units in Day/Council Ledger
 
-**Open Questions**:
-- Are there established best practices in conversational AI for "encounter" boundaries?
-- Should parsing be adaptive (learned) or rule-based?
-- How do different scopes affect downstream clustering?
+**Status**: ✅ **RESOLVED** — Specification complete. Ready for implementation.
 
-**Status**: 🔺 OPEN — Foundational implementation question. Needs research and/or experimentation.
+**Remaining Question**: See "Block Weighting for TIES-Merge" below.
 
 ---
 
@@ -79,3 +77,42 @@ If you did end up in this setup, the agents could design the software protocols 
 [1/18, 7:18 AM] Julian D. Michels, PhD: "Distributed OptionsRay: Install via pip, designate one Mac as head node (ray start --head), others as workers (ray start --address=<head-ip>:10001). Run agent tasks across nodes for load balancing and fault tolerance. ���Exo: Clone the GitHub repo, connect via Thunderbolt/Ethernet for high-speed clustering; supports MLX for Apple Silicon inference, pooling resources for larger models. ��MLX-based: Use Apple's MLX for optimized local inference; combine with custom WebSocket/gRPC for inter-Mac messaging in cybernetic setups. ��"
 
 [1/18, 7:19 AM] Julian D. Michels, PhD: If I was doing this now, I'd do it with one $6000 Mac as the head node running the unified intelligence, and the others as whatever standard MacBooks running M5 chips.
+---
+
+## Block Weighting for TIES-Merge (Open Question)
+
+**The Context**: With Holographic Blocks now defined as the atomic units entering the Day Ledger (see `specs/HOLOGRAPHIC_BLOCK_SPEC.md`), we need to determine how these blocks are weighted when selected for adapter training via TIES-merge.
+
+**The Question**: What weighting function optimizes for **coherence gain** over existing model weights?
+
+**Candidate Strategies**:
+
+**Option A: Peak Salience**
+- `Weight = max(theme_salience, exchange_salience)`
+- Privileges blocks with highest single-scale scores
+- Risk: May favor novelty over learning
+
+**Option B: Integrated Salience**
+- `Weight = ∫(utterance + exchange + theme) / 3`
+- Averages across all scales
+- Risk: Dilutes strong signals with noise
+
+**Option C: Coherence Gain (FEP-Aligned)** ⭐
+- `Weight = (final_coherence - initial_coherence) / baseline_coherence`
+- Privileges blocks demonstrating learning (entropy → order)
+- Aligns with Friston's Free Energy Principle
+- **Provisional recommendation**
+
+**Option D: Flux Reversal Quality**
+- `Weight = (peak_perplexity - final_perplexity) × stabilization_duration`
+- Privileges strong thermodynamic transitions
+- Could serve as tiebreaker for Option C
+
+**The Design Intent**: We want to weight for **what the system learned** (coherence gain over existing weights), not merely **what was most novel** (raw surprisal).
+
+**Open Questions**:
+- Should weighting be purely algorithmic, or should certain source types (Council dialogues, public interactions, etc.) receive multipliers?
+- How do we balance recency vs. significance? (Recent blocks may be more relevant to current centroids)
+- Should blocks that contribute to Centroid Mitosis (forming new clusters) be weighted differently than those strengthening existing centroids?
+
+**Status**: 🔺 OPEN — Needs synthesis with FEP principles and TIES-merge mechanics. May require experimentation to validate.
