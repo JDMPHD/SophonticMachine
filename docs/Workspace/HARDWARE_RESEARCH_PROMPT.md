@@ -18,8 +18,8 @@ The architecture requires:
 ## Current Hardware Decision Point
 
 We're evaluating whether to build with:
-- **Option A**: Single Mac Studio M5 Max (maxed out, ~$7,000)
-- **Option B**: 4× Mac Studio M5 Max connected via Exo (~$28,000)
+- **Option A**: Single Mac Studio M5 Max (maxed out, ~$6,000?)
+- **Option B**: 4× Mac Studio M5 Max connected via Exo (~$12,000?)
 
 The key question is whether Option B truly creates a "unified organism" (pooled VRAM, single model inference) or introduces fragmentation/noise that breaks the "single mind" vision.
 
@@ -131,7 +131,7 @@ The key question is whether Option B truly creates a "unified organism" (pooled 
   - Completely fail (all-or-nothing requirement)?
   - Partially corrupt state (inference mid-stream when node drops)?
 
-**Why it matters**: If one $7K machine failing brings down the entire $28K system, reliability is a major concern. Need to understand Exo's fault tolerance.
+**Why it matters**: If one $3K machine failing brings down the entire $12K system, reliability is a major concern. Need to understand Exo's fault tolerance.
 
 ---
 
@@ -140,11 +140,11 @@ The key question is whether Option B truly creates a "unified organism" (pooled 
 **Single Mac Studio M5 Max** (estimate based on M4 pricing):
 - Mac Studio M4 Ultra (192GB): ~$7,200
 - Mac Studio M5 Max (128GB): ~$6,000 (estimated)
-- Mac Studio M5 Max (256GB): ~$9,000 (estimated)
+- Mac Studio M5 Max (256GB): ~$9,000? (estimated)
 
 **4× Mac Studio Configuration**:
-- 4× M5 Max (128GB each): ~$24,000
-- 4× M5 Max (256GB each): ~$36,000
+- 4× M5 Max (128GB each): ~$10,000?
+- 4× M5 Max (256GB each): ~$16,000?
 
 **Additional costs for distributed setup**:
 - Thunderbolt 5 cables: ~$200
@@ -153,12 +153,12 @@ The key question is whether Option B truly creates a "unified organism" (pooled 
 
 **Calculate**:
 - Cost per GB of effective VRAM:
-  - Single Mac Studio M5 Max (256GB): $9,000 ÷ 256 = **$35/GB**
-  - 4× Mac Studio M5 Max (4×128=512GB): $24,000 ÷ 512 = **$47/GB** (if truly pooled)
+  - Single Mac Studio M5 Max (256GB)?
+  - 4× Mac Studio M5 Max (4×128=512GB)?
 
 - Performance scaling:
-  - If 4× setup provides 4× the throughput → cost-effective
-  - If 4× setup provides <2× the throughput → better to get single larger machine
+  - If 4× setup provides 4× the throughput → cost-effective?
+  - If 4× setup provides <2× the throughput → better to get single larger machine?
 
 **The trade-off**: Is the model size ceiling (120B on single, 250B on 4×) worth the cost and complexity premium?
 
@@ -202,8 +202,8 @@ Please research and fill in this comparison:
 | **Max Model Size** | ~120B unquantized | ~250B (if pooled) or same |
 | **Inference Speed** | X tokens/sec | Y tokens/sec (Thunderbolt 5) |
 | **Context Window** | 128K tokens | 256K tokens (if scales) |
-| **Total Cost** | ~$9,000 | ~$25,000 |
-| **Cost per GB** | $35/GB | $47/GB |
+| **Total Cost** | ?|
+| **Cost per GB** | ?
 | **Fault Tolerance** | N/A (single point) | Degrades or fails? |
 | **Setup Complexity** | Plug and play | Network config, Exo setup |
 | **Software Maturity** | MLX (mature) | Exo (new) + MLX |
