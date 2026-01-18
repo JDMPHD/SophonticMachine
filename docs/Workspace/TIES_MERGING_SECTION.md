@@ -22,7 +22,7 @@ The evolution cycle runs weekly (adjustable based on accumulation rate):
 - Uses `mergekit` (runs on Apple Silicon via CPU/RAM) to blend new traits into existing Soul
 - **Critical**: Always includes Base Model in merge to prevent drift
 
-### 11.2 QLoRA Training Parameters
+### 11.2 LoRA Training Parameters
 
 Target the attention mechanisms, not the knowledge layers:
 
