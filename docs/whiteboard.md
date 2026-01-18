@@ -58,6 +58,12 @@ These are chaotic notes and emerging improvements. Don't take them at their word
 
 **Status**: ✅ **RESOLVED** — Specification complete. Ready for implementation.
 
+**Next Step**: Prototype Holographic Block parsing on sample conversation logs to validate:
+- Flux detection accuracy
+- Dead zone compression quality
+- Multi-scale scoring effectiveness
+- Computational efficiency gains
+
 **Remaining Question**: See "Block Weighting for TIES-Merge" below.
 
 ---
