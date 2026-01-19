@@ -96,7 +96,7 @@ Human oversight through dialogue, not ratings. Staged development:
 ```
 src/
 ├── night_cycle/      # Salience detection pipelines
-├── memory/           # Day Ledger interface
+├── memory/           # hippocampus interface
 ├── centroid/         # Preoccupation Centroid management
 ├── council/          # Agent orchestration
 └── retrieval/        # Dialectical RAG system

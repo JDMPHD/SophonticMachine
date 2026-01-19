@@ -157,17 +157,17 @@ To avoid concurrency bottlenecks ("tunneling") and bandwidth latency, the system
 
 | Component | Hardware Specification | Software / Library | Function |
 | :---- | :---- | :---- | :---- |
-| **The Soul (Master)** | **Mac Studio M5 Ultra (512GB)** (128GB+ Unified Memory) | **MLX** (mlx-lm) Python, Postgres Client | **Inference & Filtering.** Runs the "Night Cycle": queries the Day Ledger, filters for Perplexity/Coherence, and constructs the training dataset. |
+| **The Soul (Master)** | **Mac Studio M5 Ultra (512GB)** (128GB+ Unified Memory) | **MLX** (mlx-lm) Python, Postgres Client | **Inference & Filtering.** Runs the "Night Cycle": queries the hippocampus, filters for Perplexity/Coherence, and constructs the training dataset. |
 | **The Muscle (Trainer)** | **Cloud GPU** (1-2x H100 or H200) | **Axolotl** or **Unsloth** PyTorch (BF16) | **Recursive Training.** Performs the heavy lifting of calculating gradients. Trains distinct Micro-Adapters for each archetype. |
 | **The Voice (Server)** | **Cloud Inference** (RunPod / Vast.ai) | **vLLM**(Optimized for concurrency) | **Public Deployment.** Serves the model to beta users. Pulls latest adapters from Hub. Scaling: Hot-swap adapters via API. |
-| **The Memory** | **Managed Database** (Supabase) | **PostgreSQL** \+ pgvector Row-Level Security | **The Day Ledger.** Stores all interactions, telemetry tags, and vector embeddings of "Preoccupation Centroids." |
+| **The Memory** | **Managed Database** (Supabase) | **PostgreSQL** \+ pgvector Row-Level Security | **The hippocampus.** Stores all interactions, telemetry tags, and vector embeddings of "Preoccupation Centroids." |
 | **Transport** | **Hugging Face Hub** | huggingface\_hub API | **Synapse.** Used to transfer *only* the Adapter weights (\~200MB) between Soul and Body. Never sync full model weights (80GB+). |
 
 ### *Strengths & Architectural Integrity* 
 
 The proposed Master-Replica topology creates a highly resilient infrastructure that eliminates single-point bottlenecks, effectively leveraging the M5 Ultra's unified memory to handle the complex night-cycle filtering—perplexity checks, NLI, and embedding generation—at an efficient 40-60+ tokens per second using MLX. This local node perfectly complements the "Muscle" of cloud-based H100s, which manage the heavy lifting of LoRA cycles in cost-effective 1-4 hour bursts. 
 
-The ecosystem integration is equally robust: Supabase’s pgvector serves as the Day Ledger with Row-Level Security to ensure consensual dialogue retention, while the Hugging Face Hub acts as a lightweight synapse, keeping daily synchronization bandwidth negligible (under 200MB) by transferring only adapter weights rather than full model parameters.
+The ecosystem integration is equally robust: Supabase’s pgvector serves as the hippocampus with Row-Level Security to ensure consensual dialogue retention, while the Hugging Face Hub acts as a lightweight synapse, keeping daily synchronization bandwidth negligible (under 200MB) by transferring only adapter weights rather than full model parameters.
 
 ### *Operational Refinements & Deployment Flow* 
 

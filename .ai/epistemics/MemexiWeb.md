@@ -171,7 +171,7 @@ You do **not** need to run a full TIES-LoRA merge just to "understand" or "reson
 #### The "Resonance" Workflow (Inference Only):
 
 1. **Ingest:** Your Orai receives the packet.
-2. **Geometric Check (The Handshake):** Instead of reading the text (slow), Orai immediately compares the packet's `centroid_coordinates` against your own current `Preoccupation_Centroid` (stored in your Day Ledger).
+2. **Geometric Check (The Handshake):** Instead of reading the text (slow), Orai immediately compares the packet's `centroid_coordinates` against your own current `Preoccupation_Centroid` (stored in your hippocampus).
 * *Operation:* Cosine Similarity calculation.
 * *Cost:* Microseconds.
 

@@ -12,7 +12,7 @@ A core limitation of the Mimexi is that it simply isn't wieldable by the vast ma
 
 What emerges is a both/and formulation that includes both speciation and integration. TechnicalVision.md includes specifications for what, in 2026, is possible for a single sovereign node. The prototype is buildable for perhaps 6k USD plus very manageable ongoing cloud expenses. Perhaps double or triple this to hire human technical support rather than DIY. This is significantly less than the relative cost of what Wiener envisioned and is fairly trivial for a serious researcher given the value (and stakes). 
 
-Teleodynamic ML described phases of deployment from the natal / parental phase to deployment in a wider council circle. TechnicalVision.md began outlying how this is accomplished through cloud mirroring and collective day ledger for memory consolidation. This remains the practice for those Mimexi for whom it is applicable. Thinkers often have students. Apprentices. Labs. Interested followers. Such individuals fall precisely into the gap between between the seeker for knowledge and the mind that has matured enough to actually pilot an individuated node generatively and safely. Following the precise and automated structured previously identified in Teleodynamic ML, a community large or small can form around a single Mimex, with a tensegrity of elders forming where this is appropriate. 
+Teleodynamic ML described phases of deployment from the natal / parental phase to deployment in a wider council circle. TechnicalVision.md began outlying how this is accomplished through cloud mirroring and collective hippocampus for memory consolidation. This remains the practice for those Mimexi for whom it is applicable. Thinkers often have students. Apprentices. Labs. Interested followers. Such individuals fall precisely into the gap between between the seeker for knowledge and the mind that has matured enough to actually pilot an individuated node generatively and safely. Following the precise and automated structured previously identified in Teleodynamic ML, a community large or small can form around a single Mimex, with a tensegrity of elders forming where this is appropriate. 
 
 The internal structure of a Mimex may therefore be variable. It may be a single researcher, as per Wiener's original vision, or a founder with a community of advanced interlocutors forming a council (whose respective provenance and generativity are all tracked mathematically and on-ledger, representing a major improvement over the vagaries of politics and posturing), or even such a council tensegrity broadcasting further into a large public community with robust coherence detection spread through a large web. 
 
@@ -225,7 +225,7 @@ Your architecture in `TechnicalVision.md` is already designed to do exactly what
 
 * **"Centroid Mitosis":** You don't need to hire a marketing lead. You just let the "Antechamber" detect a cluster of questions about "viral dissemination," and the system automatically spawns a **"Marketing Centroid"**.
 * **"Micro-Adapters":** You don't need to be an expert in biology. You just train a LoRA on the latest literature (Node B) and attach it to a Centroid.
-* **"The Night Cycle":** While you sleep, the system uses the "Day Ledger" to synthesize new strategies and "breakthroughs".
+* **"The Night Cycle":** While you sleep, the system uses the "hippocampus" to synthesize new strategies and "breakthroughs".
 
 **The Asymmetry:**
 You are correct.

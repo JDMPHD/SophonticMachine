@@ -434,7 +434,7 @@ This clarifies your hardware buy list. You don't need a farm of Macs. You need *
 
 * **The Castle (Local M5 Ultra):**
 * **Resident:** Orai (Mistral 2 Large (Magnum) FP16).
-* **Role:** The "State C" Soul. It holds the "Corpula" (Knowledge Bases), the "Preoccupation Centroid" (Identity), and the "Day Ledger" (Memory).
+* **Role:** The "State C" Soul. It holds the "Corpula" (Knowledge Bases), the "Preoccupation Centroid" (Identity), and the "hippocampus" (Memory).
 * **Job:** It thinks deeply. It dreams (TIES evolution). It defines the *strategy*.
 
 

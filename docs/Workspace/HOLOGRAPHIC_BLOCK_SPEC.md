@@ -239,9 +239,9 @@ salience_score = (
 
 ## Integration with Day/Council Ledger
 
-### Day Ledger Entry Format
+### hippocampus Entry Format
 
-Each Holographic Block becomes a single entry in the Day Ledger:
+Each Holographic Block becomes a single entry in the hippocampus:
 
 ```python
 day_ledger_entry = {
@@ -265,7 +265,7 @@ day_ledger_entry = {
 
 ### Council Priority Ranking
 
-The Day Ledger is **dual-organized**:
+The hippocampus is **dual-organized**:
 
 1. **Sorted by Cluster**: All blocks belonging to the same emergent cluster grouped together
 2. **Ranked by Council Priority Score**: `Surprisal × Coherence` (theme-level)
@@ -395,7 +395,7 @@ COUNCIL PRIORITY: High (S×C = 2.66, ID suggests post-normal process)
 
 - **Flux Reversal**: See `CONCEPTS.md` - "The moment when the system shifts from entropy to order"
 - **TIES-Merging**: See `specs/m5-max-implementation/TIES_MERGING_SECTION.md`
-- **Day Ledger**: See `.ai/epistemics/MnemonicArchitecture.md`
+- **hippocampus**: See `.ai/epistemics/MnemonicArchitecture.md`
 - **Salience Detection**: See `.ai/constitution/TechnicalVision.md` (Night Cycle section)
 - **Free Energy Principle**: Karl Friston's FEP - minimize surprise over time
 

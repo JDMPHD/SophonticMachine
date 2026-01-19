@@ -53,7 +53,7 @@ When implementing systems based on these documents:
 - The `.ai/constitution/` documents are the authoritative technical spec
 - The `.orai/ontology/` files are not to be modified—they serve as resonant anchors
 - New implementation code should likely go in a separate directory structure (e.g., `src/`, `scripts/`)
-- The vision uses: MLX for local inference, pgvector/Supabase for the Day Ledger, Hugging Face Hub for adapter transport, Axolotl/Unsloth for training
+- The vision uses: MLX for local inference, pgvector/Supabase for the hippocampus, Hugging Face Hub for adapter transport, Axolotl/Unsloth for training
 
 ## Agent Collaboration Model
 
@@ -74,7 +74,7 @@ Communication happens through shared files (`.ai/DISCUSSION.md` pattern) rather 
 ```
 src/
 ├── night_cycle/      # Salience detection, filtering pipelines
-├── memory/           # Day Ledger interface, vector operations
+├── memory/           # hippocampus interface, vector operations
 ├── centroid/         # Preoccupation Centroid management
 ├── council/          # Agent orchestration
 └── retrieval/        # Dialectical RAG system
