@@ -1,3 +1,6 @@
+# This M5 Max section is largely out of date. We've realized that while we could build a toy prototype on the Max, we will need to scale to a Mac Studio Ultra to actualize.
+
+
 ## 10. Local Memory OS Architecture (Letta Integration)
 
 For persistent local inference on M5 Max hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
