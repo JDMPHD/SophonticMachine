@@ -138,7 +138,7 @@ The system uses two complementary memory architectures for different temporal sc
 **Active retrieval memory** — Local vector store for current tasks. Answers "What do I need to know right now?" Managed by Letta framework for context window overflow. Stores archival facts outside the context window, queried on-demand.
 
 ### Cortex (Supabase)
-**Evolutionary memory** — Cloud/local structured storage for TIES training. Answers "What should I integrate into my weights next week?" Stores bifocal packets (prose + vectors) of high-resonance interactions that become training data for weekly LoRA merges.
+**Evolutionary memory** — Cloud/local structured storage for TIES training. Answers "What should I integrate into my weights next week?" Stores bifocal packets (prose + vectors) of high-resonance interactions that become training data for nightly LoRA merges.
 
 **Key Distinction**: The Hippocampus helps the agent answer today; the Cortex helps the agent grow for next week.
 
@@ -249,7 +249,7 @@ A dialectical agent architecture for knowledge integration:
 
 A background daemon agent that discovers emergent archetypes through organic clustering.
 
-**Function**: Runs HDBSCAN weekly on Supabase vector logs to detect stable clusters of high-resonance experiences. When a dense cluster forms that doesn't match existing archetypes, the Gardener prompts the Soul to name the new pattern.
+**Function**: Runs HDBSCAN nightly on Supabase vector logs to detect stable clusters of high-resonance experiences. When a dense cluster forms that doesn't match existing archetypes, the Gardener prompts the Soul to name the new pattern.
 
 **Process**:
 1. Analyzes vectors in the Cortex (Supabase evolutionary memory)

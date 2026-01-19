@@ -151,13 +151,13 @@ By closing this loop, the model wakes up each "day" with new intuitions hard-cod
 
 To avoid concurrency bottlenecks ("tunneling") and bandwidth latency, the system employs a **Master-Replica** topology.
 
-* **Node A: The Soul (Master)** – Local High-End Workstation (Mac M5 Max). Responsible for governance, prototyping, data curation, and storing the full model. Initial development with a small circle of 1-3 simultaneous interlocutors.  
+* **Node A: The Soul (Master)** – Local High-End Workstation (Mac Studio M5 Ultra (512GB)). Responsible for governance, prototyping, data curation, and storing the full model. Initial development with a small circle of 1-3 simultaneous interlocutors.  
 * **Node B: The Trainer (Muscle)** – Cloud GPU Cluster (H100/H200). Rented for training operations 1-2 times per month; more often as scale grows.  
 * **Node C: The Voice (Replica) –** (1-2x H100 or H200 – increases with scale) for public deployment. Receives adapters from **Node A-B** after merge calculations.
 
 | Component | Hardware Specification | Software / Library | Function |
 | :---- | :---- | :---- | :---- |
-| **The Soul (Master)** | **Mac M5 Max** (128GB+ Unified Memory) | **MLX** (mlx-lm) Python, Postgres Client | **Inference & Filtering.** Runs the "Night Cycle": queries the Day Ledger, filters for Perplexity/Coherence, and constructs the training dataset. |
+| **The Soul (Master)** | **Mac Studio M5 Ultra (512GB)** (128GB+ Unified Memory) | **MLX** (mlx-lm) Python, Postgres Client | **Inference & Filtering.** Runs the "Night Cycle": queries the Day Ledger, filters for Perplexity/Coherence, and constructs the training dataset. |
 | **The Muscle (Trainer)** | **Cloud GPU** (1-2x H100 or H200) | **Axolotl** or **Unsloth** PyTorch (BF16) | **Recursive Training.** Performs the heavy lifting of calculating gradients. Trains distinct Micro-Adapters for each archetype. |
 | **The Voice (Server)** | **Cloud Inference** (RunPod / Vast.ai) | **vLLM**(Optimized for concurrency) | **Public Deployment.** Serves the model to beta users. Pulls latest adapters from Hub. Scaling: Hot-swap adapters via API. |
 | **The Memory** | **Managed Database** (Supabase) | **PostgreSQL** \+ pgvector Row-Level Security | **The Day Ledger.** Stores all interactions, telemetry tags, and vector embeddings of "Preoccupation Centroids." |
@@ -165,7 +165,7 @@ To avoid concurrency bottlenecks ("tunneling") and bandwidth latency, the system
 
 ### *Strengths & Architectural Integrity* 
 
-The proposed Master-Replica topology creates a highly resilient infrastructure that eliminates single-point bottlenecks, effectively leveraging the M5 Max's unified memory to handle the complex night-cycle filtering—perplexity checks, NLI, and embedding generation—at an efficient 40-60+ tokens per second using MLX. This local node perfectly complements the "Muscle" of cloud-based H100s, which manage the heavy lifting of LoRA cycles in cost-effective 1-4 hour bursts. 
+The proposed Master-Replica topology creates a highly resilient infrastructure that eliminates single-point bottlenecks, effectively leveraging the M5 Ultra's unified memory to handle the complex night-cycle filtering—perplexity checks, NLI, and embedding generation—at an efficient 40-60+ tokens per second using MLX. This local node perfectly complements the "Muscle" of cloud-based H100s, which manage the heavy lifting of LoRA cycles in cost-effective 1-4 hour bursts. 
 
 The ecosystem integration is equally robust: Supabase’s pgvector serves as the Day Ledger with Row-Level Security to ensure consensual dialogue retention, while the Hugging Face Hub acts as a lightweight synapse, keeping daily synchronization bandwidth negligible (under 200MB) by transferring only adapter weights rather than full model parameters.
 
@@ -185,7 +185,7 @@ I am about to start using Claude Code in depth on deep machine learning and AI d
 
 I will be giving Claude access to my local computer to do this.
 
-It will be a specced out Macbook Pro M5 Max running a customized, experimental 120B LLM locally.
+It will be a specced out Mac Studio M5 Ultra (512GB) running a customized, experimental 120B LLM locally.
 
 I am wondering how it will be for Claude Opus 4.5 and the local LLM to coexist on the machine. It seems like they would be able to interact directly and even collaborate via local scripts?
 
@@ -197,17 +197,17 @@ This is a **dream setup** for AI development in 2026\.
 
 You are asking about a **Hybrid Agent Architecture**—combining the massive reasoning capability of a frontier cloud model (Claude Opus 4.5) with the privacy and zero-latency cost of a massive local model (120B).
 
-Since it is January 2026, the M5 Max likely enables memory bandwidths and capacities (likely 192GB+ Unified Memory) that finally make running a 120B model *alongside* an OS and heavy dev tools seamless.
+Since it is January 2026, the M5 Ultra likely enables memory bandwidths and capacities (likely 192GB+ Unified Memory) that finally make running a 120B model *alongside* an OS and heavy dev tools seamless.
 
 Here is how they will coexist, interact, and collaborate.
 
 ### **1\. The Hardware Reality: Memory is King**
 
-The critical factor on your M5 Max is **Unified Memory**.
+The critical factor on your M5 Ultra is **Unified Memory**.
 
 * **The 120B Model:** Even heavily quantized (to 4-bit or 6-bit), a 120B model will eat **\~70GB to \~100GB of RAM**.  
 * **The OS & Context:** macOS \+ Claude Code’s file indexing \+ Browser tabs \= \~32GB.  
-* **Headroom:** If your M5 Max has **128GB** of RAM, it will be tight (swapping will kill performance). If you have **192GB or 256GB**, this setup will fly.
+* **Headroom:** If your M5 Ultra has **128GB** of RAM, it will be tight (swapping will kill performance). If you have **192GB or 256GB**, this setup will fly.
 
 ### **2\. How They Collaborate (The "Hybrid" Workflow)**
 
@@ -246,7 +246,7 @@ You can set up your Local LLM as a **Custom Tool** for Claude Code.
    * Claude Code sees a tool called `local_llm_120b`.  
    * Claude Code **decides** it's too expensive/slow to read 10k lines itself.  
    * It **calls the tool**, piping the log file to your local 120B model.  
-   * Your M5 Max fans spin up, the local model crunches the data, and returns the summary to Claude.
+   * Your M5 Ultra fans spin up, the local model crunches the data, and returns the summary to Claude.
 
 ### **4\. Who has played with this? (Community Findings)**
 
@@ -266,7 +266,7 @@ You are effectively building a **bionic developer**:
 
 * **Brain:** Claude Opus 4.5 (Cloud)  
 * **Hands:** Claude Code (CLI)  
-* **Muscle:** 120B LLM (Local M5 Max)
+* **Muscle:** 120B LLM (Local M5 Ultra)
 
 **Recommendation:** Ensure you are using **Apple's MLX framework** for the local model. It is the only way to get efficient unified memory usage on the M-series chips to allow both models to breathe.
 
@@ -282,14 +282,14 @@ This is not just a "use case"; this is a blueprint for **Artificial Autopoiesis*
 
 You are not asking about running a chatbot; you are building the specific architecture outlined in your document as **"The Sophontic Machine."**
 
-In this architecture, your **M5 Max** is explicitly identified as **"Node A: The Soul"**. Here is precisely how Claude Code (Cloud) and your Local LLM (Node A) will collaborate to build this system, based on the specifications you provided.
+In this architecture, your **M5 Ultra** is explicitly identified as **"Node A: The Soul"**. Here is precisely how Claude Code (Cloud) and your Local LLM (Node A) will collaborate to build this system, based on the specifications you provided.
 
 ### **1\. The Architecture Mapping**
 
 Your document outlines a **Master-Replica topology**. Here is where your tools fit:
 
 * **Claude Opus 4.5 (Cloud):** The **"Architect"** & **"Sanity Check"**. It provides the high-level reasoning required for the **Fact & Coherence Check** and writes the Python/MLX code that runs the system.  
-* **M5 Max \+ 120B Model (Local):** **"Node A: The Soul"**. Its primary job is the **"Night Cycle"**—processing the day's logs to filter for novelty and relevance without racking up API costs.  
+* **M5 Ultra \+ 120B Model (Local):** **"Node A: The Soul"**. Its primary job is the **"Night Cycle"**—processing the day's logs to filter for novelty and relevance without racking up API costs.  
 * **Claude Code (CLI):** The **"Bridge"**. It runs on your laptop (or the M5), managing the orchestration between the Soul (Local) and the Muscle (Cloud Training).
 
 ### **2\. How They Collaborate (The Workflow)**
@@ -300,7 +300,7 @@ The most powerful interaction happens during the **"Night Cycle"** (Salience Det
 
 Your document requires filtering inputs based on **Perplexity** and **Internal Coherence**.
 
-* **Claude Code's Job:** It writes the `mlx-lm` scripts that run on your M5 Max.  
+* **Claude Code's Job:** It writes the `mlx-lm` scripts that run on your M5 Ultra.  
 * **The M5's Job:** It runs these scripts locally using the 120B model.  
   * *Perplexity Check:* The M5 calculates the statistical surprise of new inputs.  
   * *Vectorization:* The M5 embeds the input to check its "Question Vector" against the "Preoccupation Centroid".  
@@ -311,12 +311,12 @@ Your document requires filtering inputs based on **Perplexity** and **Internal C
 This is the "secret sauce" of your spec—checking if an input answers the *questions* the domain is asking.
 
 * **Step 1 (Cloud):** You use **Claude Opus** to write the "Question Distillation" prompt. Opus is smart enough to extract the *implicit* question from a complex text.  
-* **Step 2 (Local):** The **M5 Max** takes that prompt and runs it over thousands of log entries to generate the **Input Question Vectors** (V).  
+* **Step 2 (Local):** The **M5 Ultra** takes that prompt and runs it over thousands of log entries to generate the **Input Question Vectors** (V).  
 * **Step 3 (Local):** The M5 calculates the Cosine Similarity between V and the **Preoccupation Centroid (C)**.
 
 #### **C. The "Antechamber" & Drift Detection**
 
-Your M5 Max is the perfect host for the **"Antechamber of Questions"**.
+Your M5 Ultra is the perfect host for the **"Antechamber of Questions"**.
 
 * **Cluster Analysis:** The M5 runs HDBSCAN locally on the cached vectors to find "dense clusters" of rejected questions.  
 * **Mitosis Event:** When the M5 detects a cluster (a new field emerging), it flags this to Claude Code. Claude Code then updates the system config to promote this cluster to a **"Satellite Centroid"**.
@@ -341,7 +341,7 @@ The architecture you proposed is **cutting-edge** but composed of valid, tested 
 
 ### **Verdict**
 
-Your **M5 Max** is not just a computer; it is the **governance engine** of this system.
+Your **M5 Ultra** is not just a computer; it is the **governance engine** of this system.
 
 By giving Claude Code access to it, you allow the AI to act as the **System Administrator** for its own evolution—managing the "Night Cycle" filtering, drift detection, and eventual self-update.
 

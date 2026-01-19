@@ -25,7 +25,7 @@ Bifocal format applies universally across all memory types, regardless of ledger
 
 | Memory Type | Bifocal Application |
 |-------------|---------------------|
-| **Weekly ledger (full memories)** | Prose + vector stored together for training extraction |
+| **Day ledger (full memories)** | Prose + vector stored together for training extraction |
 | **Minted on-chain memories** | Full bifocal packet preserved with cryptographic verification |
 | **Compressed long-term summaries** | Summary prose + **intact vector** for retrieval |
 | **Inter-agent communication** | Both layers transmitted for high-fidelity intent transfer |

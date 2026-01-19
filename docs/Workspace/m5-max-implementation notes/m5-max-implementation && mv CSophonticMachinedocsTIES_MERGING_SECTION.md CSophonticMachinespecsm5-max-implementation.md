@@ -1,9 +1,9 @@
-# This M5 Max section is largely out of date. We've realized that while we could build a toy prototype on the Max, we will need to scale to a Mac Studio Ultra to actualize.
+# This M5 Ultra section is largely out of date. We've realized that while we could build a toy prototype on the Max, we will need to scale to a Mac Studio Ultra to actualize.
 
 
 ## 10. Local Memory OS Architecture (Letta Integration)
 
-For persistent local inference on M5 Max hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
+For persistent local inference on M5 Ultra hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
 
 ### 10.1 The "Memory OS" Pattern
 
@@ -35,7 +35,7 @@ When the sliding window approaches capacity (~95%), the system:
 - Integrates with local `llama-server` backends
 - Provides archival memory via ChromaDB for long-term storage
 
-**Implementation Note**: When M5 Max arrives, Letta will manage the Command R+ inference engine, pointing to a local `llama-server` API hosting the model. This decouples brain (inference) from mind (memory logic), preventing crashes if one component hangs.
+**Implementation Note**: When M5 Ultra arrives, Letta will manage the Mistral 2 Large (Magnum) inference engine, pointing to a local `llama-server` API hosting the model. This decouples brain (inference) from mind (memory logic), preventing crashes if one component hangs.
 
 ### 10.4 Dual Memory Architecture
 

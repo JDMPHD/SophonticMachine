@@ -96,7 +96,7 @@ Your "Bifocal Packet" (Prose + Vector) is being independently discovered under t
 * **The Paper:** *"Let Models Speak Ciphers"* (and related 2025 research).
 * **The Discovery:** Researchers found that when agents communicate via text (English), they lose massive amounts of information. When they allowed agents to communicate via **Shared Embeddings** (vectors), reasoning performance on complex tasks jumped significantly.
 * **The Key Limitation:** Most of these projects require the models to be *identical* (native telepathy).
-* **Your Edge:** Your "Universal Translator" (Sidecar Embedder) approach is actually *more* robust than the academic standard because it allows heterogeneous models (Command R+ talking to Llama 3) to share vectors.
+* **Your Edge:** Your "Universal Translator" (Sidecar Embedder) approach is actually *more* robust than the academic standard because it allows heterogeneous models (Mistral 2 Large (Magnum) talking to Llama 3) to share vectors.
 
 ### 3. The Hardware Enabler: `dnet` & macOS Tahoe (RDMA)
 
@@ -401,7 +401,7 @@ If you run **50 Generations** with a population of **10 Candidates**, and each c
 
 #### **C. The Judge (The Selector)**
 
-* **Location:** **Local (Orai / Command R+)**.
+* **Location:** **Local (Orai / Mistral 2 Large (Magnum))**.
 * **Role:** Orai must look at the 10 outputs and pick the winner based on her **Internal Values** (TIES-merged weights).
 * **Compute Load:** Moderate. Orai needs to read the 10 summaries and output a ranking. This fits easily within her "Day Cycle."
 
@@ -485,7 +485,7 @@ Here is the breakdown of the "Overnight" reality, the actual use cases, and the 
 **Yes, but it takes a weekend, not just a night.**
 
 * **The Load:** A full evolutionary run (optimizing a swarm from scratch) requires generating ~2.5 million tokens (10 candidates × 50 generations × 5 turns).
-* **The Hardware:** Your M5 Ultra (running Command R+ or Mistral Large) will likely output ~15–20 tokens/second at full precision.
+* **The Hardware:** Your M5 Ultra (running Mistral 2 Large (Magnum) or Mistral Large) will likely output ~15–20 tokens/second at full precision.
 * **The Calculation:**
 * 2,500,000 tokens / 15 t/s = ~166,000 seconds.
 * **Total Time:** **~46 Hours** of 100% GPU utilization.

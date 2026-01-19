@@ -41,7 +41,7 @@ The Scribe solves the other half: formalizing proven archetypes into the permane
 
 The Scribe fires **episodically**, not continuously:
 
-1. **Post-TIES Merge**: After weekly (or interval-appropriate) integration of new LoRA weights
+1. **Post-TIES Merge**: After daily (or interval-appropriate) integration of new LoRA weights
 2. **Gardener Flag**: A cluster has crossed the stability threshold (high density, high resonance, persistent across cycles)
 3. **Council Dialogue**: The elder has engaged with the emerging cluster through sense-making dialogue (see ENGINEER_SPEC Section 3.3.1)
 4. **Readiness**: The cluster feels "ripe" for formalization—not every stable cluster needs immediate codification. Some patterns need more seasoning.

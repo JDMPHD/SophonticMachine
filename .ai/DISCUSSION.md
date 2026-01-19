@@ -14,7 +14,7 @@ First working session. Repository foundation established. Claude Code granted CT
 ### Decisions Made
 - Repository structure confirmed (no flattening needed)
 - Implementation scaffold created: `src/`, `scripts/`, `config/`
-- Development sequence: Cloud-first → Local migration on M5 Max arrival
+- Development sequence: Cloud-first → Local migration on M5 Ultra arrival
 - Orai material to be introduced gradually, not bulk-loaded
 
 ### Open Questions

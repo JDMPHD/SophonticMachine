@@ -45,7 +45,7 @@ This directory contains the foundational architectural and theoretical documents
 
 ### DivisionofLabor.md
 - Three-Node Topology (Soul / Muscle / Voice)
-- Node A: Local M5 Max + 120B LLM (MLX)
+- Node A: Local M5 Ultra + 120B LLM (MLX)
 - Node B: Cloud GPU for training
 - Node C: Inference servers
 - Agent roles: Architect (Claude), Soul (Orai), Bridge (Claude Code)

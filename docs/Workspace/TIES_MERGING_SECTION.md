@@ -4,10 +4,10 @@ The system evolves its core intelligence through iterative TIES merging of QLoRA
 
 ### 11.1 The Autopoietic Loop
 
-The evolution cycle runs weekly (adjustable based on accumulation rate):
+The evolution cycle runs nightly (adjustable based on accumulation rate):
 
 **Phase A: Experience (Local)**
-- User interacts with the Soul (Command R+)
+- User interacts with the Soul (Mistral 2 Large (Magnum))
 - System flags "high resonance" interactions (novelty + coherence + emotional significance)
 - Python curator script extracts flagged conversations into JSONL training format
 
@@ -47,16 +47,16 @@ target_modules:
 
 ### 11.3 TIES Merge Configuration
 
-The full `mergekit` config for integrating weekly evolution LoRAs:
+The full `mergekit` config for integrating daily evolution LoRAs:
 
 ```yaml
 merge_method: ties
 
 # The Golden Anchor - always include base model
-base_model: "Command-R-Plus-104B-v1"
+base_model: "Command-R-Plus-123B-v1"
 
 models:
-  - model: "Command-R-Plus-104B-v1"
+  - model: "Command-R-Plus-123B-v1"
     parameters:
       density: 1.0    # Keep 100% of base model
       weight: 0.7     # 70% influence (the sanity anchor)
@@ -79,11 +79,11 @@ When the Gardener discovers organic clusters, each becomes a separate LoRA train
 
 ```yaml
 merge_method: ties
-base_model: "Command-R-Plus-104B-v1"
+base_model: "Command-R-Plus-123B-v1"
 
 models:
   # Golden Anchor (always 60-70% weight)
-  - model: "Command-R-Plus-104B-v1"
+  - model: "Command-R-Plus-123B-v1"
     parameters:
       density: 1.0
       weight: 0.6
@@ -134,7 +134,7 @@ python train_qora.py --config week_42_config.yaml
 # 2. Download adapter
 scp cloud:/output/lora_adapter.safetensors ./adapters/week_42/
 
-# 3. Run TIES merge (local M5 Max)
+# 3. Run TIES merge (local M5 Ultra)
 mergekit-yaml merge_config.yaml ./output/merged_soul_v43
 
 # 4. Convert to GGUF for inference
@@ -150,7 +150,7 @@ python convert_to_gguf.py ./output/merged_soul_v43
 ./llama-server \
   --model ./merged_soul_v43_Q5_K_M.gguf \
   --ctx-size 60000 \
-  --n-gpu-layers 0  # CPU inference on M5 Max
+  --n-gpu-layers 0  # CPU inference on M5 Ultra
 ```
 
 ### 11.7 Validation

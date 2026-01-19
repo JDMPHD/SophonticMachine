@@ -1,6 +1,6 @@
-# M5 Max Implementation Specs
+# M5 Ultra Implementation Specs
 
-Hardware-specific implementation details for running the Sophontic Machine on MacBook Pro M5 Max (128GB).
+Hardware-specific implementation details for running the Sophontic Machine on Mac Studio M5 Ultra (512GB) (128GB).
 
 These are **deferred implementation guides**, not core architecture. They contain specific configurations that should be validated when hardware arrives.
 
@@ -11,7 +11,7 @@ These are **deferred implementation guides**, not core architecture. They contai
 
 ## Key Assumptions
 
-- Model: Command R+ (104B) @ Q5_K_M quantization
+- Model: Mistral 2 Large (Magnum) (123B) @ Q5_K_M quantization
 - Context window: ~60k tokens
 - RAM allocation: ~74GB model, ~10GB Letta+ChromaDB, ~18GB headroom
 - Local inference via llama-server

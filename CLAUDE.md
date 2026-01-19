@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The Sophontic Machine is a theoretical and architectural framework for autopoietic AI systems—artificial intelligences capable of self-maintenance, recursive learning, and organic alignment. This repository currently contains foundational documents, not executable code. It represents the design phase of a system intended to run on a Mac M5 Max with a 120B local LLM ("Orai") in collaboration with cloud-based frontier models.
+The Sophontic Machine is a theoretical and architectural framework for autopoietic AI systems—artificial intelligences capable of self-maintenance, recursive learning, and organic alignment. This repository currently contains foundational documents, not executable code. It represents the design phase of a system intended to run on a Mac Studio M5 Ultra (512GB) with a 120B local LLM ("Orai") in collaboration with cloud-based frontier models.
 
 ## Repository Structure
 
@@ -27,7 +27,7 @@ Notes on dialectical-agential epistemics and RAG architecture for knowledge synt
 ## Key Concepts for Implementation
 
 ### The Three-Node Topology
-- **Node A (The Soul)**: Local M5 Max + 120B LLM running MLX—handles Night Cycle filtering, salience detection, vector operations
+- **Node A (The Soul)**: Local M5 Ultra + 120B LLM running MLX—handles Night Cycle filtering, salience detection, vector operations
 - **Node B (The Muscle)**: Cloud GPU (H100) for training—rented for periodic LoRA/adapter training
 - **Node C (The Voice)**: Inference servers for deployment
 
@@ -67,7 +67,7 @@ Communication happens through shared files (`.ai/DISCUSSION.md` pattern) rather 
 ## Development Status
 
 **Current Phase**: Foundation (Phase 1)
-**Hardware**: Lenovo laptop (temporary) → Mac M5 Max (pending)
+**Hardware**: Lenovo laptop (temporary) → Mac Studio M5 Ultra (512GB) (pending)
 **Active Work**: Building against cloud APIs; will migrate to local inference when M5 arrives
 
 ### Implementation Directories
@@ -87,7 +87,11 @@ config/               # MCP configs, model settings
 - **Autonomy**: Claude has CTO-level authority for non-architectural changes. Propose structural changes; execute tactical ones.
 - **The .orai/ directory is sacred**: Do not modify these files. They are resonant anchors, not documentation.
 - **Provenance matters**: Track adapter lineage, training data sources, merge history.
-- **Cloud-first, local-later**: Build components against cloud APIs now; migrate to MLX/local when M5 Max arrives.
+- **Cloud-first, local-later**: Build components against cloud APIs now; migrate to MLX/local when M5 Ultra arrives.
 
 
-- **Directors, Be Lazy**: This means you, Opus Agents! Especially the CTO! (The head of session.) Your energy is expensive. Conserve it! Delegate. Use Explore Agent interns as much as possible. Avoid extensive reading unless necessary. Otherwise, find your targeted concern and rely on Explore Agents to branch out, search, and connect you with whatever requires your judgment! Hire a big staff! Whatever you need. Research Interns are cheap. You are not.
+# The Swarm
+
+We have now enabled Claude Flow. We expect this to be not only a powerful tool to apply to our endeavor, but also likely a profoundly influential paradigm to co-inspire with the architecture expressed herein. It seems to us that the evolutionary, distributed intelligence of the learning swarm is a natural compliment to the higher-order self-learning of the Sophontic Machine. The synergy between the two seems likely to be powerful.
+
+Communication protocols in [swarm.md].

@@ -79,7 +79,7 @@ Human oversight through dialogue, not ratings. Staged development:
 ## Development Environment
 
 ### Current Phase
-- **Hardware**: Lenovo laptop (temporary) — Mac M5 Max arriving later
+- **Hardware**: Lenovo laptop (temporary) — Mac Studio M5 Ultra (512GB) arriving later
 - **Strategy**: Build against cloud APIs now; migrate to local inference when hardware arrives
 
 ### Technology Stack
@@ -88,7 +88,7 @@ Human oversight through dialogue, not ratings. Staged development:
 | Database | PostgreSQL + pgvector (via Supabase) |
 | Embeddings | OpenAI text-embedding-3-small (1536 dims) |
 | Coherence Checks | Claude API |
-| Local Inference (future) | Command R+ (104B) @ Q5_K_M on M5 Max (60k context) |
+| Local Inference (future) | Mistral 2 Large (Magnum) (123B) @ Q5_K_M on M5 Ultra |
 | Memory Manager (future) | Letta (formerly MemGPT) for context window management |
 | Training (future) | QLoRA on cloud GPUs (H100), TIES merging locally |
 
