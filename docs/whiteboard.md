@@ -771,3 +771,8 @@ def assess_dead_zone(turn_sequence):
 4.  **Creates High-Quality Data:** The `Frustration Ledger` becomes a curated dataset of **systemic failure modes**, perfect for generating those "breakthrough insights" that *will* pass the High-Perplexity/High-Coherence filter.
 
 In essence, you're giving your Sophontic Machine a **sense of proprioception**—an awareness of whether its "mental motions" are actually moving it forward or just spinning its wheels. This is a far more organic basis for adaptation than brute-force evolutionary swarms.
+
+
+## Closing Note
+
+I continued to explore the evolutionary swarm approach after this, and I think it is very powerful - not to replace Orai's memory system, but as another layer. In fact, it may be the more appropriate layer to solve this "Frustration" issue. See Swarm.md.
