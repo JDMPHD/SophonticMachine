@@ -1,6 +1,6 @@
 ## 11. TIES Merging Protocol for Autopoietic Evolution
 
-The system evolves its core intelligence through iterative TIES merging of QLoRA adapters trained on curated experience logs. This process integrates new learnings into the model's weights while preventing catastrophic forgetting.
+The system evolves its core intelligence through iterative TIES merging of LoRA adapters trained on curated experience logs. This process integrates new learnings into the model's weights while preventing catastrophic forgetting.
 
 ### 11.1 The Autopoietic Loop
 
@@ -13,7 +13,7 @@ The evolution cycle runs nightly (adjustable based on accumulation rate):
 
 **Phase B: Crystallization (Cloud Training)**
 - Mac pushes encrypted JSONL file to secure H100 instance (RunPod/Lambda)
-- Runs QLoRA training (15-30 minutes for curated data)
+- Runs LoRA training (15-30 minutes for curated data)
 - Returns LoRA adapter (~100-200MB)
 - Cost: ~$0.50-$2.00 per evolution cycle
 

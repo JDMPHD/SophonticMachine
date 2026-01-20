@@ -355,7 +355,7 @@ Imagine your agent is a scholar sitting at a desk. The "Corpula" are different b
 
 
 * **Evolution (Passive):** Supabase (Log Store).
-* *Routine:* Nightly export of "High Resonance" logs -> Cloud QLoRA -> Local TIES Merge.
+* *Routine:* Nightly export of "High Resonance" logs -> Cloud LoRA -> Local TIES Merge.
 
 
 * **Hands:** Claude Code (via MCP).
@@ -457,7 +457,7 @@ Absolutely. It transforms your logs from "dead text" into "captured cognitive st
 ***
 
 ## Gemini
-The documentation you provided describes an excellent "Bicameral Mind" architecture specifically designed for the memory constraints of a 128GB M5 Ultra machine. The core compromise in that architecture was the reliance on cloud compute for QLoRA training and the use of a quantized model locally to fit everything in RAM (pp. 3, 7).
+The documentation you provided describes an excellent "Bicameral Mind" architecture specifically designed for the memory constraints of a 128GB M5 Ultra machine. The core compromise in that architecture was the reliance on cloud compute for LoRA training and the use of a quantized model locally to fit everything in RAM (pp. 3, 7).
 Upgrading to the 512GB M5 Ultra fundamentally eliminates those compromises and allows you to upgrade every step of the process.
 Here is how the enhanced hardware impacts the assessment:
 1. Model Selection: Full Precision is Now Viable

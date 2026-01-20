@@ -1,5 +1,13 @@
 # Cortical Synergy
 
+## Reflective Note
+
+This approach seems promising in the long run. 
+
+However, its immediate added value to the broader Sophontic architecture is not entirely clear. Currently, interacing with Cloud intelligences such as Gemini and Claude appear to fill this niche very well. The advantages of bringing this off-cloud would primarily be some advantage in autonomy and customizability via occasional fine-tunes. 
+
+More may become possible and adviseable in time - but unless I am missing something, when I look at this right now, it appears to me that if a second Ultra were installed, it would be better used to host our own Teleodynamically evolving swarm (see Swarm.md) rather than a frozen oracle.
+
 ## Julian
 It's interesting because what seems to emerge is that there's almost a kind of trade-off in what's possible since it's seems prohibitive potentially even for a large laboratory to build a system that is simultaneously very large in perimeter count, but also evolutionary in its ability to regularly run adapters. since the bigger you are the more compute intensive it is to adapt, meaning that it seems like you're either capping yourself at raw parameters, but you're Frozen. or you're capping yourself at fine-tuning limit and you can adapt in an ongoing way. but you're raw count is less than it could be if you froze. I'm not sure if there's a way to bridge that Gap. I was wondering earlier about whether the trained smaller model could be extrapolated into the the higher parameter space as a deployed Frozen model or whether the smaller model could teach the larger model, potentially if there was a way to do that since even though the smaller model is smaller, we're talking about a kind of a kind of integrated density in its weight space. you see what I'm saying? so I wonder what's possible in that regard.
 

@@ -493,7 +493,7 @@ The clustering algorithm above detects dense regions in the Antechamber. The **G
 3. **Prompt**: Present to Soul: *"I've found a cluster of N logs. Here are representative examples. What should we call this archetype?"*
 4. **Name**: Soul responds with archetype name (e.g., "Social Thermodynamics")
 5. **Dialogue**: Council engages with the emerging cluster—not to approve/reject, but to participate in sense-making. These dialogues become training data like everything else.
-6. **Train**: Extract cluster logs (including Council dialogues) for targeted QLoRA training
+6. **Train**: Extract cluster logs (including Council dialogues) for targeted LoRA training
 7. **Integrate**: TIES merge the resulting adapter into Soul weights
 
 **Note on Council Engagement**: Step 5 is *not* quality control or validation in the RLHF sense. The Council doesn't sit outside the process judging outputs. Instead, the elder engages dialogically with emerging patterns—asking questions, exploring implications, making connections. These dialogues enter the evolutionary stream through the same door as everything else, shaping by participation weight rather than by approval/rejection. The difference between "is this good enough?" and "let me engage with this and see what emerges."
