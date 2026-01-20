@@ -1,4 +1,62 @@
-### The Autopoietic Loop: Architecture
+# This section is largely out of date. 
+We've realized that while we could build a toy prototype on the Max, we will need to scale to a Mac Studio Ultra to actualize.
+
+All of this needs to be properly updated to reflect our revised hardware estimations; that's a 512GB Mac Studio Ultra running a full precision Mistral 2 Large (Magnum) with an 8-bit 70B Nous Hermes 4 as assistant, interlocutor, and majordomo. 
+
+
+***
+
+## 10. Local Memory OS Architecture (Letta Integration)
+
+For persistent local inference on M5 Max hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
+
+### 10.1 The "Memory OS" Pattern
+
+The local agent's context window (32k-60k tokens depending on quantization) is sliced into three protected sectors:
+
+| Sector | Size | Purpose | Persistence |
+|--------|------|---------|-------------|
+| **System Instructions** | ~1k | Identity & Prime Directives | Permanent (Cached) |
+| **The "Notebook"** | ~2k | Writable memory managed by agent | Evolving (Rewritten by Agent) |
+| **The Sliding Window** | ~29-57k | Active conversation / Code View | Transient (Flushed regularly) |
+
+### 10.2 Context Pressure Triggers
+
+When the sliding window approaches capacity (~95%), the system:
+
+1. **Pauses** user interaction
+2. **Prompts** the agent: "Update your Notebook with critical facts from recent conversation, and commit data to Vector DB"
+3. **Agent rewrites** the Notebook sector with summary
+4. **Script flushes** the Sliding Window
+5. **Script injects** the updated Notebook
+6. **Resumes** with fresh short-term memory but intact summary
+
+### 10.3 Letta Framework Integration
+
+**Letta** (formerly MemGPT) is the reference implementation for this "Memory OS" pattern:
+
+- Handles context pressure detection automatically
+- Manages the Notebook rewrite protocol
+- Integrates with local `llama-server` backends
+- Provides archival memory via ChromaDB for long-term storage
+
+**Implementation Note**: When M5 Ultra arrives, Letta will manage the Mistral 2 Large (Magnum) inference engine, pointing to a local `llama-server` API hosting the model. This decouples brain (inference) from mind (memory logic), preventing crashes if one component hangs.
+
+### 10.4 Dual Memory Architecture
+
+The local system uses two complementary memory stores:
+
+- **Hippocampus (Letta + ChromaDB)**: Active retrieval for current tasks. Local vector store for "What do I need to know right now?"
+- **Cortex (Supabase)**: Evolutionary logs for TIES merging. Structured storage for "What should I integrate into my weights next week?"
+
+See Section 2 for Supabase schema details. ChromaDB runs locally and stores archival facts outside the context window, queried on-demand by Letta.
+
+---
+
+
+
+
+# The Autopoietic Loop: Architecture
 
 To build the "Self-Creating" loop you described, you need a rigorous pipeline that separates **Experience** (Hot Storage) from **Integration** (Cold Weights).
 
@@ -491,3 +549,8 @@ Local Full LoRA Training: When you run your daily evolution step, the training p
 Future Model Upgrades: As models move toward 200B parameters in the next year or two, you have the flexibility to upgrade your core "Soul" model without upgrading your hardware.
 The M5 Ultra provides the computational freedom necessary to ensure your persistent daemon is both deep in nuance and robust in execution.
 Would you like to explore setting up the multi-agent architecture now, or perhaps define the SQL schema for your "Bifocal Log" table?
+
+***
+
+# The KV Cache Math
+Assumptions: Mistral Large 2 (123B) and Hermes (Llama 3.1 70B) both use Grouped Query Attention (GQA) with standard settings (8 KV heads).Per-Token RAM Cost (FP16 Cache):Mistral Large 2: ~0.36 MB per tokenHermes 70B: ~0.33 MB per tokenCombined: ~0.69 MB per token (simultaneous context)Context WindowMistral Large 2 CacheHermes 70B CacheCombined Cache RAM32k11.5 GB10.5 GB22 GB64k23 GB21 GB44 GB128k (Max)46 GB42 GB88 GBPro Tip: If you enable 8-bit KV Cache (available in llama.cpp/ollama), you can cut these numbers in half (Total ~44GB at 128k) with negligible perplexity loss.2. The "Red Line" Total System LoadHere is where your 512GB gets eaten.Mistral Large 2 (FP16 Weights): ~246 GBHermes 70B (Q8 Weights): ~75 GBmacOS & Display Buffer: ~25 GB (Conservative estimate)Static Load (Before you type a word): 346 GBAdding the Context (128k Combined):Static Load (346 GB) + Max KV Cache (88 GB) = 434 GBThe Verdict:You are safe. You have approximately 78 GB of headroom even at full 128k context on both models.Green Zone: 0k - 64k context (Lots of room for RAG vectors).Yellow Zone: 64k - 128k context (System remains snappy).Red Line: If you attempt to load a third medium model, or if you disable GQA, or if you use a massive vector database in RAM (>50GB), you will hit swap.

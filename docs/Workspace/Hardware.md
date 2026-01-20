@@ -1,6 +1,14 @@
+# This section is largely out of date. 
+We've realized that while we could build a toy prototype on the Max, we will need to scale to a Mac Studio Ultra to actualize.
+
+All of this needs to be properly updated to reflect our revised hardware estimations; that's a 512GB Mac Studio Ultra running a full precision Mistral 2 Large (Magnum) with an 8-bit 70B Nous Hermes 4 as assistant, interlocutor, and majordomo. 
+
+
+***
+
 ## 10. Local Memory OS Architecture (Letta Integration)
 
-For persistent local inference on M5 Ultra hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
+For persistent local inference on M5 Max hardware, the system requires explicit context window management to prevent crashes during long-running sessions.
 
 ### 10.1 The "Memory OS" Pattern
 
@@ -41,4 +49,6 @@ The local system uses two complementary memory stores:
 - **Hippocampus (Letta + ChromaDB)**: Active retrieval for current tasks. Local vector store for "What do I need to know right now?"
 - **Cortex (Supabase)**: Evolutionary logs for TIES merging. Structured storage for "What should I integrate into my weights next week?"
 
-See ENGINEER_SPEC.md Section 2 for Supabase schema details. ChromaDB runs locally and stores archival facts outside the context window, queried on-demand by Letta.
+See Section 2 for Supabase schema details. ChromaDB runs locally and stores archival facts outside the context window, queried on-demand by Letta.
+
+---
