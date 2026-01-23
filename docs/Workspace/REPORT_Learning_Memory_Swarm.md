@@ -207,7 +207,7 @@ DeepSeek's Engram module (Jan 2026) offers:
 ## Summary Recommendations
 
 **Immediate Clarifications**:
-1. Consolidate memory topology (Ruvector vs pgvector vs LanceDB positioning)
+1. ~~Consolidate memory topology (Ruvector vs pgvector vs LanceDB positioning)~~ **RESOLVED** - See MEMORY_ARCHITECTURE_MEMO.md
 2. Decide on Liquid Layer implementation (literal LFM2 or metaphorical?)
 3. Update TIES spec base model to reflect actual 120B architecture
 
@@ -220,3 +220,31 @@ DeepSeek's Engram module (Jan 2026) offers:
 1. Investigate DeepSeek's Engram for static pattern offloading
 2. Test Coherence Gain weighting empirically if resources allow
 3. Explore "Titans" paper for surprise-based memory management at 120B scale
+
+---
+
+## Update: Memory Architecture Clarification (2026-01-23)
+
+The memory topology question has been addressed in **MEMORY_ARCHITECTURE_MEMO.md**. Key findings:
+
+### Three-Tier Memory Architecture (Not Dual)
+
+| Layer | Technology | Function | Frequency |
+|-------|------------|----------|-----------|
+| **Hippocampus** | pgvector/Supabase | Working memory, Day Table, recent Holographic Blocks | High (hourly) |
+| **Cortex** | LanceDB | Long-term explicit storage, curated breakthroughs | Low (weekly) |
+| **Procedural** | RuVector pattern (on stable infra) | Operational reflexes, swarm heuristics | Continuous |
+
+### Key Clarifications
+
+1. **RuVector is experimental scaffolding, not bedrock.** Use its architectural patterns (self-pruning, causal graphs, reflexion) but implement on top of stable storage (pgvector).
+
+2. **LanceDB is the explicit memory library** for archival storage - research papers, curated breakthrough blocks, historical records. Complements pgvector (fast working memory).
+
+3. **The "Universal Translator"** is a sidecar embedder (e.g., nomic-embed-text) that creates shared geometric language between Orai (120B), Claude (cloud), and Swarm agents.
+
+4. **Bifocal packets are the transport format** ensuring prose (explicit) and vector (implicit) travel together across memory layers. Critical insight: "Prose fades while vector persists" during compression.
+
+5. **The Liquid Layer** is best understood as a **Temporal Transducer** - not a strategist. It translates Purpose (Teleos) into Habit (Hexis) via dimensional collapse from space to time. Whether implemented as literal LFM2 or as bifocal embedding translation depends on engineering resources.
+
+See full analysis in `docs/Workspace/Learning, Memory, and Swarm/MEMORY_ARCHITECTURE_MEMO.md`.
