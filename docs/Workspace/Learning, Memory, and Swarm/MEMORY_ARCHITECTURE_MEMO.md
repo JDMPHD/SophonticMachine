@@ -126,7 +126,7 @@ CREATE TABLE memories (
 ## Part 2: Evaluating Julian's Dual-Database Hypothesis
 
 ### Julian's Statement:
-> "We would be storing two different databases: one potentially in something like RooVector (a living network of associations), and the other in something like repos or some other form of database that is an actual library of explicit content such as research papers. But the holographic memory would do what the bifocal packets would do - they would essentially be an associational reference pointing from the explicit toward the implicit."
+> "We would be storing two different databases: one potentially in something like RuVector (a living network of associations), and the other in something like repos or some other form of database that is an actual library of explicit content such as research papers. But the holographic memory would do what the bifocal packets would do - they would essentially be an associational reference pointing from the explicit toward the implicit."
 
 ### Evaluation: **Fundamentally Correct, with Refinements**
 
@@ -147,10 +147,9 @@ The documents reveal a more nuanced structure:
 Julian asked: "What would the explicit memory database actually be?"
 
 Based on the corpus, it's a **hybrid**:
-1. **Git repos:** For code, specifications, constitutional documents (.ai/constitution/)
-2. **LanceDB:** For vectorized research corpus, curated breakthrough blocks
-3. **DCL (Distributed Coherence Ledger):** For immutable provenance records of formative changes
-4. **Markdown files:** For human-readable documentation and workspace notes
+1. **Git repos:** For code, specifications, constitutional documents (.ai/constitution/) - this is a mixture of code and human-readable documentation and workspace notes(markdown files)
+2. **LanceDB:** For vectorized research corpus, curated memory blocks, evolving knowledge
+3. **DCL (Distributed Coherence Ledger):** For immutable provenance records of formative changes and major breakthroughs
 
 The "library" is not a single database but a **federated archive** with different storage for different artifact types.
 
@@ -217,7 +216,7 @@ Orai receives the bifocal packet. The prose provides explicit context; the vecto
 
 ### 3.3 How a Swarm Agent Interprets the Same Memory
 
-**Scenario:** A Claude Flow swarm agent needs to understand a directive from Orai.
+**Scenario:** A swarm agent needs to understand a directive from Orai.
 
 **Step 1: Orai emits Bifocal Packet**
 Orai sends a directive with both prose instruction and vector constraint:
