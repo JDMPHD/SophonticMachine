@@ -207,7 +207,7 @@ DeepSeek's Engram module (Jan 2026) offers:
 ## Summary Recommendations
 
 **Immediate Clarifications**:
-1. ~~Consolidate memory topology (Ruvector vs pgvector vs LanceDB positioning)~~ **RESOLVED** - See MEMORY_ARCHITECTURE_MEMO.md
+1. ~~Consolidate memory topology (Ruvector vs pgvector vs LanceDB positioning)~~ **RESOLVED** - See Learning_Memory_Swarm_Report
 2. Decide on Liquid Layer implementation (literal LFM2 or metaphorical?)
 3. Update TIES spec base model to reflect actual 120B architecture
 
