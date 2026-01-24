@@ -17,3 +17,9 @@ This step often produces fully new articulations or internal papers. These shoul
 
 
 ---
+
+# Coconut Adapters
+
+We need to research the original COCONUT paper, and we need to investigate best practices to either **procure** or **produce** the datasets needed to effectively build the staged coconut adapters for the initial Mistral Large 123B Magnum.
+
+I am told this can be generated, or may be available pre-built, but in any case we will need clarity.
