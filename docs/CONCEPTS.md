@@ -290,7 +290,7 @@ These four layers together create recursive memory instead of recursive erasure,
 
 ## Coherence Yield Threshold
 
-The minimum entropy reduction required for an event to be minted in the DCL.
+The minimum entropy reduction (Arreté) required for an event to be minted in the DCL.
 
 Calibrated to developmental stage:
 - **Frequent in early Parental phase** — the nascent system needs rich experience

@@ -100,7 +100,7 @@ CREATE INDEX idx_day_table_universal_embedding ON day_table
 
 ### 2.3 User Tier Retention
 
-Different users have different hippocampal retention spans based on Arreté history.
+Different users have different hippocampal retention spans based on historical Arreté.
 
 | Tier | Criteria | Raw Log Retention | Holographic Block Retention |
 |------|----------|-------------------|----------------------------|
