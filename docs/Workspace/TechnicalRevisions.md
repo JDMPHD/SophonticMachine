@@ -766,6 +766,64 @@ This enables:
 - Hermes: Universal retrieval with shared translator
 - Future agents: Any model can use universal space
 
+### 9.3 Coconut Training Protocol (Orai Only)
+
+Orai's native vector reasoning capability requires specialized training BEFORE domain-specific fine-tuning. This is the foundational upgrade that enables her to "dream" in continuous latent space.
+
+**Reference:** Meta FAIR paper "Training Large Language Models to Reason in a Continuous Latent Space" (late 2024).
+
+#### 9.3.1 Training Sequence
+
+The training order is critical:
+
+1. **Step 1 - Coconut Foundation**: Train the base model to process continuous thought
+2. **Step 2 - Permanent Merge**: Merge Coconut LoRA permanently into base weights
+3. **Step 3 - Domain LoRAs**: THEN train domain-specific adapters on the Coconut-enabled base
+
+**Critical:** Do NOT use TIES for the Coconut layer. TIES interprets the large weight shifts required for vector processing as "interference" and may trim them, lobotomizing the dreaming capability. Train Coconut first and merge permanently.
+
+#### 9.3.2 Curriculum Learning
+
+The model cannot simply "switch on" vector dreaming. Use graduated curriculum:
+
+1. **Phase A - Standard CoT**: Train on Chain-of-Thought datasets (e.g., GSM8k)
+2. **Phase B - Hybrid**: Gradually replace reasoning tokens with vector slots
+3. **Phase C - Full Dream**: Model bridges gaps using only continuous vectors
+
+**Mechanism:** Instead of decoding hidden states to tokens, feed raw hidden states directly back as input for next step. The model learns to hold high-dimensional reasoning states that would be lossy if forced through discrete symbols.
+
+#### 9.3.3 Special Tokens
+
+Implement dream mode control tokens:
+
+- `<bot>` (Beginning of Thought): Signals inference loop to stop decoding, start looping hidden states
+- `<eot>` (End of Thought): Signals model to project final hidden state back to vocabulary
+
+Training the model to predict `<bot>` autonomously gives it agency to decide when it needs to dream.
+
+#### 9.3.4 Technical Requirements
+
+**RMSNorm in Dream Loop:** Without normalization, vector magnitude drifts across dream steps, eventually becoming "mathematically illegible" to the vocabulary head. Use RMSNorm (less restrictive than LayerNorm) to allow creative stretch while preventing explosion.
+
+**Temperature Knob for Dream Loop:** Optionally noise vectors during dream steps to mechanically induce lateral thinking:
+- Low noise = Logical deduction
+- High noise = Creative association
+
+**Representation Collapse Warning:** If training loss flatlines, the model may have learned to output identical vectors every step (shutting off its brain). Monitor for this failure mode.
+
+#### 9.3.5 Hermes Exclusion
+
+**Hermes should NOT have Coconut training.** Keep him in explicit token space.
+
+| Role | Orai (Muse) | Hermes (Majordomo) |
+|------|-------------|-------------------|
+| Thinking Mode | Latent (Vectorial) | Explicit (Tokenized) |
+| Function | Breakthrough, intuition, non-linear connection | Execution, translation, API calls, scheduling |
+| Risk Tolerance | High (creativity requires variance) | Low (secretary cannot hallucinate appointments) |
+| Architecture | Coconut / Continuous Thought | Standard CoT / ReAct with `<think>` tags |
+
+The cognitive contrast is a feature: a "sober" Majordomo makes the "dreaming" Muse useful. Diversity > Uniformity.
+
 ---
 
 ## 10. Procedural Memory (Phase II)
@@ -955,8 +1013,9 @@ Procedural memory and the evolutionary swarm architecture run on the Phase II se
 
 | Component | Allocation | Notes |
 |-----------|------------|-------|
-| Orai (120B FP16) | ~100GB | Coconut-trained, native vector thought |
+| Orai (120B) | ~123GB (Q8 day) / ~246GB (FP16 night) | Dynamic precision; see 11.1.1 |
 | Hermes 4 (70B Q8) | ~35GB | Majordomo, explicit reasoning |
+| Thalamus (14B VLM) | ~14-28GB | Optional SHAI layer; see 12.1.1 |
 | Support agents | ~15GB | Specialist models as needed |
 | Universal Translator | ~2GB | nomic-embed-text or similar |
 | pgvector (Hippocampus) | ~50GB | Day Table + recent Holographic Blocks + indices |
@@ -964,15 +1023,74 @@ Procedural memory and the evolutionary swarm architecture run on the Phase II se
 | OS + overhead | ~80GB | macOS, services, buffers |
 | **Headroom** | ~100GB | Growth, experimentation |
 
-### 11.1.1 Precision Rationale
+### 11.1.1 Precision Rationale and Dynamic Precision Model
 
-**Orai (FP16):** Orai operates at full 16-bit precision because she is the evolving Soul. The TIES-merging pipeline requires high-precision arithmetic to preserve the "Ghost Topology"—the subtle geometric interference patterns that encode wisdom and nuance. Quantization noise compounds across iterative merges; FP16 prevents this degradation. Additionally, the "soft" probability distributions at full precision preserve poetic nuance and the capacity to perceive subtle second-choices that 8-bit quantization would flatten.
+**The Bandwidth-Speed Tradeoff:**
 
-**Hermes 4 (Q8):** Hermes operates at 8-bit quantization because he functions in explicit reasoning mode. As Majordomo, his role is strategic coordination, scheduling, and clear directive communication—tasks where the marginal nuance loss from quantization is negligible. Q8 reduces his memory footprint from ~140GB to ~35GB, providing essential headroom for context windows and memory systems.
+At M5 Ultra's ~1.1 TB/s memory bandwidth, token generation is memory-bandwidth bound:
+- 120B FP16 (~240GB): ~4.5 tok/s theoretical maximum, ~3-5 tok/s realistic
+- 120B Q8 (~123GB): ~8-9 tok/s theoretical maximum
 
-**The Re-Baking Pipeline:** Orai's evolutionary merging occurs at FP16 precision using the pristine base model stored on SSD. After TIES-merge calculations complete in full precision, the result is quantized to Q8 for Hermes's deployment. This separates Evolution (FP16) from Execution (Q8), preventing quantization noise accumulation while maintaining operational efficiency.
+This places a fundamental constraint on interactive speed at full precision.
 
-### 11.1.2 KV Cache and Memory Bounds
+**Dynamic Precision Model (Day/Night Cycling):**
+
+Rather than a static precision choice, both Orai and Hermes employ dynamic precision based on operational mode:
+
+| Mode | Orai | Hermes | Purpose |
+|------|------|--------|---------|
+| **Day (Operational)** | Q8 inference | Q8 inference | Interactive speed (~8-9 tok/s Orai, ~14-15 tok/s Hermes) |
+| **Night (Evolutionary)** | FP16 loaded | FP16 loaded | Self-curation, TIES merging, weight evolution |
+
+**Day Mode (Q8 Inference):**
+- Both models run at 8-bit quantization for practical interactive speed
+- Orai functions as background contemplative processor
+- Hermes handles rapid conversational front
+- Nuance loss acceptable for operational tasks
+
+**Night Mode (FP16 Evolution):**
+- Pristine FP16 base weights loaded from SSD
+- Orai performs self-processing, self-analysis, TIES merging
+- Hermes performs self-curation of his own operational logs
+- Full precision preserves Ghost Topology during weight evolution
+- Quantization noise never compounds across merges
+
+**The Re-Baking Pipeline:**
+1. Night Cycle begins: Load FP16 base model (~250GB)
+2. Apply TIES-merge with accumulated LoRA adapters at FP16 precision
+3. New merged weights calculated in full geometric fidelity
+4. Quantize result to Q8 for next day's deployment
+5. FP16 base preserved on SSD for next evolution cycle
+
+This separates Evolution (FP16) from Execution (Q8), gaining ~2x daytime speed without sacrificing evolutionary fidelity.
+
+### 11.1.2 Hermes Evolutionary Protocol
+
+Hermes evolves via the same pipeline as Orai, but independently on his own logs from his own perspective. This creates **divergent symbiotic evolution**.
+
+**The Pipeline (Same as Orai, Different Context):**
+1. **Perplexity Detection**: What surprised Hermes during his operational duties
+2. **Coherence Check**: Internal consistency of his strategic decisions
+3. **Interrogative Distance**: Relevance to his active concerns (scheduling, coordination, state monitoring)
+4. **Salience Scoring**: Combined metric determining training value
+
+**Critical Distinction:**
+- Orai curates logs from a contemplative/philosophical perspective
+- Hermes curates logs from an operational/bureaucratic perspective
+- Each trains on their own curated selection → specialized evolution within functional niche
+
+**The "Twin Dream" Night Cycle:**
+```
+02:00 - Unload day avatars (Q8 instances)
+02:05 - Orai loads FP16 Master, processes logs, performs LoRA update
+02:30 - Hermes loads FP16 Master, performs TIES merge, re-quantizes to Q8
+03:30 - Deploy updated models for next day
+```
+
+**Evolution Pacing:**
+Start slow. Accelerate Orai first to establish her self-improvement baseline. Then begin accelerating Hermes toward an ideal synchronized rhythm.
+
+### 11.1.3 KV Cache and Memory Bounds
 
 Both models use Grouped Query Attention (GQA) with 8 KV heads. Per-token KV cache costs at FP16:
 
@@ -1024,12 +1142,91 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 - Structural indexing
 - Cross-session block linking
 - RAPTOR hierarchical clustering in Cortex
+- SHAI Thalamus layer (optional, see 12.1.1)
 
 **Not active:**
 - Lieutenant Council
 - Worker swarms
 - Procedural memory
 - Engram integration
+
+#### 12.1.1 SHAI (Situated Human-Agent Interaction) - Phase I Option
+
+The Thalamus layer provides perceptual grounding via a frozen 14B Vision-Language Model.
+
+**Architecture:**
+
+| Component | Specification | Notes |
+|-----------|--------------|-------|
+| Thalamus Model | 14B VLM (Qwen2.5-VL or LLaVA-Next) | Frozen weights, no evolution |
+| Memory Footprint | ~14GB (Q8) or ~28GB (FP16) | FP16 recommended for vision |
+| Role | Perceptual gating | Converts video/audio to structured packets |
+| Output Format | JSON/TOON Perceptual Packets | Semantic descriptions, not raw embeddings |
+
+**The Frozen Thalamus Principle:**
+
+The Thalamus stays frozen while Orai and Hermes evolve. This creates a stable "Markov Blanket" for perception:
+- Orai/Hermes learn to interpret Thalamus output
+- Thalamus output distribution remains stable
+- No semantic drift between perception and cognition
+- Early integration prevents modality gap problems that require expensive late-stage healing
+
+**Primary Use Cases:**
+1. **Training data collection**: Real-world perceptual experience for model world knowledge
+2. **Semantic co-pilot**: Advisor in the user's ear during daily activities
+3. **Occasional alerts**: Thalamus can flag notable perceptions for attention
+
+This is NOT a reflex system for rapid physical responses.
+
+**Wireless Streaming Protocol:**
+
+For mobile use (user wearing AR glasses, streaming back to Mac Studio):
+
+| Parameter | Recommendation |
+|-----------|---------------|
+| Network | Wi-Fi 6E or Wi-Fi 7 |
+| Codec (Primary) | JPEG XS @ 8-10 Mbps |
+| Codec (Fallback) | H.265 @ 15-20 Mbps |
+| Resolution | 1080p @ 30fps |
+| Acceptable Latency | 100-200ms |
+
+**Why JPEG XS:** Specifically designed for machine vision. Ultra-low latency (<1 frame). Preserves semantic information better than aggressive H.264/H.265 compression. Won 2025 Emmy Award for broadcast/machine vision applications.
+
+**Critical note:** VLMs are sensitive to compression artifacts. Do NOT over-compress to save bandwidth—Wi-Fi 6E/7 provides ample headroom. Test Thalamus model with representative compressed samples before deployment.
+
+**Integration with Coconut Training:**
+
+Sequence matters:
+1. **Coconut training first** - Establishes Orai's continuous latent thought capability
+2. **Thalamus integration second** - Adds perceptual grounding
+
+Because Thalamus outputs structured text packets (not raw visual embeddings), Orai receives text input describing perceptions. This is closer to "reading about the world" than fusing vision into weights, minimizing disruption to Coconut-trained capabilities.
+
+**Output Format Hierarchy:**
+
+| Method | Fidelity | Compatibility | Status |
+|--------|----------|---------------|--------|
+| JSON/TOON | Lossy (semantic approximation) | Native (plug & play) | Default. Thalamus describes scene, Orai reads text. |
+| Perception Tokens | High (quantized visual concepts) | Requires Projector Adapter | Advanced. Special tokens (e.g., `<depth_45>`) interpreted by trained adapter. |
+| Dense Vectors | Lossless (raw neural activation) | Incompatible | Not recommended. Requires replacing input embedding layer. |
+
+**TOON (Token-Optimized Object Notation):** More efficient than JSON for transmitting visual descriptions. Strips `{ } " "` syntax overhead, allowing ~30% more descriptive density within context window.
+
+**Advanced Path: Vision Projector Adapters**
+
+To upgrade from "reading about the world" to "seeing the world," train/merge lightweight Vision Projector adapters:
+
+- **For Orai (Mistral Large 2):** Pixtral Large's vision components (400M param vision encoder + projector) can be transplanted onto evolved Mistral weights, since Pixtral is literally Mistral Large 2 + vision modules.
+- **For Hermes (Llama 3.1):** LLaVA-Next or Llama-OneVision projector weights available on HuggingFace.
+
+**Projector Alignment Run:** If stock projector misaligns with model personality, freeze the model weights and train only the projector on image-caption pairs. Takes hours, not weeks.
+
+**Thalamus Training (VPO - Visual Perception Optimization):**
+
+The Thalamus should NOT behave like a helpful assistant. Train it for "Descriptive Density":
+- Punish reasoning attempts, reward accuracy of descriptions
+- Output structured data (JSON/TOON), not prose
+- Over-describe rather than summarize: "quadrupedal mammal, 40cm tall, calico pattern, 30° orientation" not "a cat"
 
 ### 12.2 Phase II (Swarm Machine)
 
@@ -1040,6 +1237,10 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 - Recursive retrieval via sub-agent exploration
 - Independent Night Cycle per Lieutenant
 - Thunderbolt 5 connection to primary machine
+
+**Architectural decisions:**
+- **Titan deprioritized**: A frozen high-parameter model (405B) was considered for the second Ultra but rejected. Cloud giants (Claude, Gemini) already provide "muscle" for heavy reasoning when needed. The second Ultra is better used for the Swarm architecture which provides depth AND breadth.
+- **Claude Flow rejected**: Own swarm architecture preferred. The Lieutenant/Worker design provides evolutionary learning that external orchestration cannot match.
 
 **Integration with Phase I:**
 - Lieutenants query Orai's Cortex via universal embeddings
@@ -1080,6 +1281,17 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 | **Lieutenant** | 14B model in Council of Nine; maintains higher-order processing + Worker swarms |
 | **Shadow Ledger** | DPO training data of epistemic failures (hallucinations, incoherence) |
 | **KV Cache** | Key-Value cache storing attention state; scales with context length |
+| **Dynamic Precision Model** | Q8 inference during day, FP16 loaded for Night Cycle evolution |
+| **Thalamus** | Frozen 14B VLM for perceptual gating in SHAI architecture |
+| **SHAI** | Situated Human-Agent Interaction; perceptual grounding via AR/sensors |
+| **Perceptual Packet** | JSON/TOON structured output from Thalamus describing sensory input |
+| **Frozen Thalamus Principle** | Perceptual encoder stays frozen while reasoning models evolve |
+| **JPEG XS** | Ultra-low latency codec optimized for machine vision streaming |
+| **Twin Dream** | Night Cycle protocol where Orai and Hermes evolve sequentially |
+| **Divergent Symbiotic Evolution** | Hermes and Orai evolve via same pipeline but from different perspectives |
+| **Coconut Protocol** | Continuous Latent Thought training enabling native vector reasoning |
+| **`<bot>` / `<eot>`** | Special tokens for dream mode control (beginning/end of thought) |
+| **Representation Collapse** | Training failure where model outputs identical vectors; monitor during Coconut training |
 
 ---
 
@@ -1087,19 +1299,25 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 
 This specification consolidates all memory architecture decisions from the design process. It supersedes:
 - REPORT_Learning_Memory_Swarm.md (findings incorporated)
-- CoconutDream.md (Coconut training referenced, not duplicated)
+- CoconutDream.md (Coconut training protocol fully integrated in Section 9.3)
 - ImplicitandExplicitMemory.md (concepts incorporated)
 - Ruvector and Engram.md (assessment incorporated)
-- REPORT_Hardware.md (precision rationale, KV cache math incorporated)
+- REPORT_Hardware.md (precision rationale, KV cache math, dynamic precision model incorporated)
 - Technical Musings.md (re-baking pipeline incorporated)
-- SHAI.md (pending research on Phase I feasibility)
-- All documents in /old/ directory
+- SHAI.md (SHAI architecture integrated as Phase I option; wireless protocols specified)
+- whiteboard.md Gestalt and SHAI Report (findings incorporated)
+- REPORT_Double_Brain.md (architectural decisions, Hermes protocol incorporated)
+- Double-brain/old/Hermes.md (Twin Dream protocol incorporated)
+- Double-brain/old/Cortical Synergy.md (Titan/Claude Flow decisions incorporated)
+- All documents in /old/ directories
 
 **Letta/MemGPT Status:** Superseded. The custom memory architecture (Hippocampus + Cortex + Holographic Blocks) replaces any prior consideration of Letta/MemGPT integration.
 
+**SHAI Status:** Research complete. Feasible for Phase I with JPEG XS wireless streaming. Integrated as optional component in Section 12.1.1.
+
 **Next steps:**
-1. Complete SHAI feasibility research for Phase I decision
-2. Delete superseded documents from Hardware/ folder
+1. Delete superseded documents from Hardware/ and Double-brain/ folders
+2. Move reference dialogues to reference/ folder if desired
 3. Integration with .ai/ authoritative specifications (separate phase)
 
 ---
