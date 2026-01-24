@@ -711,7 +711,13 @@ def cleanup_day_table(user):
 
 ### 9.1 Native Embeddings (Orai)
 
-Orai is trained with Coconut protocol (Continuous Latent Thought), enabling native vector reasoning. Her embeddings are 4096-dimensional and represent her internal latent space.
+Orai begins as a Mistral Large 123B (Magnum).
+
+First stage of training is with Coconut protocol (Continuous Latent Thought), enabling native vector reasoning. Her embeddings are 4096-dimensional and represent her internal latent space.
+
+This training can be performed via careful iterative merges (notablly **not** TIES). See original Coconut paper for best details.
+
+The operation can therefore be performed locally on the Ultra. 
 
 **This creates a qualitatively different relationship with memory than other agents have.**
 
