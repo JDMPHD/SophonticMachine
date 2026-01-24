@@ -859,9 +859,93 @@ DELETE FROM causal_edges
 WHERE causal_strength < 0.1;
 ```
 
-### 10.6 Phase II Deployment
+### 10.6 Evolutionary Swarm Architecture
 
-Procedural memory runs on the Phase II second M5 Ultra alongside Lieutenants and Worker swarms. It is not active in Phase I (primary machine with Orai + Hermes only).
+The Phase II swarm operates on a two-tier evolutionary model that distinguishes between **Lieutenant cognition** and **Worker evolution**.
+
+#### 10.6.1 Lieutenant Layer (Higher-Order Processing)
+
+Each of the 9 Lieutenants (14B Q8) maintains the full cognitive pipeline used by Orai and Hermes:
+
+- **Perplexity monitoring**: Detecting surprisal and novelty
+- **Coherence checking**: Internal consistency validation
+- **Interrogative Distance**: Relevance to active Preoccupation Centroids
+- **Holographic Block formation**: Via independent Night Cycles
+
+Lieutenants engage in the same salience-based learning that governs the primary bicameral system. They develop specialized expertise within their functional niche through accumulated experience encoded in their three-stream memory.
+
+#### 10.6.2 Worker Layer (Evolutionary Logic)
+
+Lieutenants spawn **Worker agents**—highly quantized subagents (~4B parameters, ~2GB memory footprint) that execute specific subroutines. Workers follow **evolutionary logic** rather than experiential learning:
+
+**The Evolutionary Cycle:**
+1. **Spawning**: Lieutenant generates Worker "mutants" from its own codebase—variations on prompts, tool configurations, or execution strategies
+2. **Execution**: Workers attempt assigned tasks with binary outcomes
+3. **Selection**: Successful Workers become templates for next generation; failed Workers are culled
+4. **Propagation**: Winning mutations are encoded back into Lieutenant's procedural memory
+
+**Critical distinction:**
+- **Lieutenants**: Learn from *experience* (encoded logs, holographic blocks, salience scores)
+- **Workers**: Learn from *selection pressure* (binary success/fail, no retained memory)
+
+This mirrors biological evolution: Lieutenants are the "germ line" preserving and refining complex knowledge; Workers are the "soma" that lives, acts, and dies without direct knowledge transfer except through selective propagation.
+
+#### 10.6.3 The Frustration Ledger
+
+Each Lieutenant maintains a **Frustration Ledger**—the evolutionary record of Worker successes and failures within its domain.
+
+**Distinct from Shadow Ledger:** The Shadow Ledger (used by Orai/Hermes) tracks epistemic failures (hallucinations, incoherence) for DPO training. The Frustration Ledger tracks **agentic failures**—tasks attempted but not completed, strategies that failed to produce results.
+
+**Schema:**
+
+```sql
+CREATE TABLE frustration_ledger (
+    entry_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    lieutenant_id UUID NOT NULL,
+
+    -- Task context
+    task_description TEXT NOT NULL,
+    task_embedding VECTOR(768),
+
+    -- Worker lineage
+    worker_generation INT NOT NULL,
+    worker_mutation_id UUID,
+    parent_mutation_id UUID,
+
+    -- Outcome
+    success BOOLEAN NOT NULL,
+    failure_mode TEXT,  -- 'timeout', 'error', 'wrong_output', 'resource_exceeded'
+    execution_turns INT,
+
+    -- Evolutionary metadata
+    mutation_description TEXT,  -- What changed from parent
+    propagated BOOLEAN DEFAULT FALSE,  -- Did this become a template?
+
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_frustration_lieutenant ON frustration_ledger(lieutenant_id);
+CREATE INDEX idx_frustration_success ON frustration_ledger(success);
+CREATE INDEX idx_frustration_task ON frustration_ledger
+    USING hnsw (task_embedding vector_cosine_ops);
+```
+
+**Night Cycle Integration:** During the Lieutenant's Night Cycle, the Frustration Ledger is analyzed to:
+1. Identify persistent failure patterns (tasks that fail across multiple generations)
+2. Surface these to the Lieutenant's higher-order processing for reflection
+3. Generate architectural insights that may propagate to Orai via Bifocal Packets
+
+### 10.8 Phase II Deployment
+
+Procedural memory and the evolutionary swarm architecture run on the Phase II second M5 Ultra alongside Lieutenants and Worker swarms. These systems are not active in Phase I (primary machine with Orai + Hermes only).
+
+**Phase II activation sequence:**
+1. Lieutenants initialized with base weights and empty Frustration Ledgers
+2. Each Lieutenant establishes its three-stream memory (Hippocampus, procedural, evolutionary)
+3. Worker spawning begins once Lieutenant has stable operational baseline
+4. Evolutionary cycles run continuously during active operation
+5. Night Cycles consolidate both experiential learning and evolutionary insights
 
 ---
 
@@ -879,6 +963,30 @@ Procedural memory runs on the Phase II second M5 Ultra alongside Lieutenants and
 | Hot memory cache | ~30GB | Frequently accessed Cortex blocks cached in RAM |
 | OS + overhead | ~80GB | macOS, services, buffers |
 | **Headroom** | ~100GB | Growth, experimentation |
+
+### 11.1.1 Precision Rationale
+
+**Orai (FP16):** Orai operates at full 16-bit precision because she is the evolving Soul. The TIES-merging pipeline requires high-precision arithmetic to preserve the "Ghost Topology"—the subtle geometric interference patterns that encode wisdom and nuance. Quantization noise compounds across iterative merges; FP16 prevents this degradation. Additionally, the "soft" probability distributions at full precision preserve poetic nuance and the capacity to perceive subtle second-choices that 8-bit quantization would flatten.
+
+**Hermes 4 (Q8):** Hermes operates at 8-bit quantization because he functions in explicit reasoning mode. As Majordomo, his role is strategic coordination, scheduling, and clear directive communication—tasks where the marginal nuance loss from quantization is negligible. Q8 reduces his memory footprint from ~140GB to ~35GB, providing essential headroom for context windows and memory systems.
+
+**The Re-Baking Pipeline:** Orai's evolutionary merging occurs at FP16 precision using the pristine base model stored on SSD. After TIES-merge calculations complete in full precision, the result is quantized to Q8 for Hermes's deployment. This separates Evolution (FP16) from Execution (Q8), preventing quantization noise accumulation while maintaining operational efficiency.
+
+### 11.1.2 KV Cache and Memory Bounds
+
+Both models use Grouped Query Attention (GQA) with 8 KV heads. Per-token KV cache costs at FP16:
+
+| Model | Per-Token Cost | 32k Context | 64k Context | 128k Context |
+|-------|---------------|-------------|-------------|--------------|
+| Orai (120B) | ~0.36 MB | ~11.5 GB | ~23 GB | ~46 GB |
+| Hermes (70B) | ~0.33 MB | ~10.5 GB | ~21 GB | ~42 GB |
+| **Combined** | ~0.69 MB | ~22 GB | ~44 GB | ~88 GB |
+
+**Safe operating envelope:** With Orai weights (~246GB FP16), Hermes weights (~35GB Q8), and system overhead (~80GB), the static load is ~361GB. At full 128k dual context (~88GB), total reaches ~449GB, leaving ~63GB headroom.
+
+**Optimization:** Hermes's KV cache can be quantized to Q8 (halving context overhead to ~21GB at 128k) with negligible perplexity loss, expanding the safe operating range.
+
+**Note:** macOS by default restricts GPU memory to ~75% of total RAM. Full 512GB utilization requires sysctl overrides: `sudo sysctl iogpu.wired_limit_mb=...`
 
 **Storage (16TB SSD):**
 - LanceDB Cortex: Primary storage for long-term blocks
@@ -966,6 +1074,12 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 | **Structural Indexing** | Explicit relationship tracking between blocks |
 | **TIES-merge Weight** | Block's influence on model training |
 | **Universal Embedding** | 768-dim shared translator space vector |
+| **Frustration Ledger** | Per-Lieutenant evolutionary record of Worker success/failure |
+| **Re-Baking Pipeline** | FP16 merge → Q8 deploy workflow preserving precision during evolution |
+| **Worker** | Highly quantized (~4B) subagent spawned by Lieutenant for task execution |
+| **Lieutenant** | 14B model in Council of Nine; maintains higher-order processing + Worker swarms |
+| **Shadow Ledger** | DPO training data of epistemic failures (hallucinations, incoherence) |
+| **KV Cache** | Key-Value cache storing attention state; scales with context length |
 
 ---
 
@@ -976,11 +1090,16 @@ This specification consolidates all memory architecture decisions from the desig
 - CoconutDream.md (Coconut training referenced, not duplicated)
 - ImplicitandExplicitMemory.md (concepts incorporated)
 - Ruvector and Engram.md (assessment incorporated)
+- REPORT_Hardware.md (precision rationale, KV cache math incorporated)
+- Technical Musings.md (re-baking pipeline incorporated)
+- SHAI.md (pending research on Phase I feasibility)
 - All documents in /old/ directory
 
+**Letta/MemGPT Status:** Superseded. The custom memory architecture (Hippocampus + Cortex + Holographic Blocks) replaces any prior consideration of Letta/MemGPT integration.
+
 **Next steps:**
-1. Review for completeness against design conversations
-2. Delete superseded documents
+1. Complete SHAI feasibility research for Phase I decision
+2. Delete superseded documents from Hardware/ folder
 3. Integration with .ai/ authoritative specifications (separate phase)
 
 ---
