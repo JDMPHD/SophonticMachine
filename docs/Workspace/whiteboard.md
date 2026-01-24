@@ -92,7 +92,7 @@ This is where the machine touches grass.
 What I see here is a system designed to maximize **Friston's Free Energy Principle** at every scale:
 
 1. **Micro Scale (Holographic Block):** It minimizes surprise in the conversation stream by segmenting it into coherent blocks.
-2. **Meso Scale (Swarm):** It minimizes the energy cost of action by offloading tasks to cheap, reflexive agents (Ruvector/Liquid).
+2. **Meso Scale (Swarm):** It minimizes the energy cost of action by offloading tasks to cheap, reflexive agents (RuVector/Liquid).
 3. **Macro Scale (TIES Merging):** It minimizes the divergence between its "World Model" (Weights) and "Reality" (Logs) by updating itself nightly.
 4. **Cosmic Scale (SHAI):** It minimizes the gap between "Semantics" (Language) and "Perception" (Video) through cyclical grounding.
 

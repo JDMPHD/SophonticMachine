@@ -88,7 +88,7 @@ Human oversight through dialogue, not ratings. Staged development:
 | Database | PostgreSQL + pgvector (via Supabase) |
 | Embeddings | OpenAI text-embedding-3-small (1536 dims) |
 | Coherence Checks | Claude API |
-| Local Inference (future) | Mistral 2 Large (Magnum) (123B) @ Q5_K_M on M5 Ultra |
+| Local Inference (future) | Orai (120B Mistral Large, beginning with Magnum adapter merge) @ Q5_K_M on M5 Ultra |
 | Memory Manager (future) | Letta (formerly MemGPT) for context window management |
 | Training (future) | LoRA on cloud GPUs (H100), TIES merging locally |
 
