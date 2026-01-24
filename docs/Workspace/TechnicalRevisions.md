@@ -38,9 +38,25 @@ Current conversation is embedded immediately upon generation. This vector serves
 
 1. **Current moment** → query Hippocampus via vector similarity
 2. **Hippocampal hits** → query Cortex via vector similarity + structural references
-3. **Cortical hits** → return with full live zones (breakthroughs preserved verbatim)
+3. **Cortical hits** → reconsolidate and return with full live zones
 
 This creates a connected memory graph, not a flat database. Navigation follows semantic resonance across time.
+
+**Cortex Retrieval with Reconsolidation (Step 3 Expanded):**
+
+When retrieving from Cortex, the system performs memory reconsolidation to heal stale native embeddings and detect cognitive shifts (see Section 9.6 for full protocol):
+
+1. Attempt native embedding search on Cortex
+2. If confidence < threshold: fall back to Universal Embedding search (always stable)
+3. For each retrieved block:
+   - Re-embed Live Zones through current model (single forward pass, ~0.15-0.2s per block)
+   - Compute delta between old and new native embeddings
+   - If delta > epiphany threshold: inject metacognitive signal into context (see Section 9.8)
+   - Heal database: overwrite native embedding with fresh version
+   - Update `last_accessed` timestamp and `vector_history`
+4. Return retrieved content with any epiphany signals
+
+This ensures memories remain experientially current while preserving explicit content and stable navigation.
 
 ---
 
@@ -87,7 +103,19 @@ CREATE TABLE day_table (
 
     -- Metadata
     turn_number INT,
-    token_count INT
+    token_count INT,
+
+    -- Message classification (see Section 9.8)
+    message_type TEXT DEFAULT 'dialogue',  -- 'dialogue', 'internal_monologue', 'epiphany', 'system'
+    epiphany_metadata JSONB
+    /*
+    For message_type = 'epiphany':
+    {
+      "trigger_block_id": "uuid...",
+      "delta_magnitude": 0.42,
+      "shift_description": "Understanding shifted from Security-cluster toward Autonomy-cluster"
+    }
+    */
 );
 
 CREATE INDEX idx_day_table_session ON day_table(session_id);
@@ -96,6 +124,7 @@ CREATE INDEX idx_day_table_native_embedding ON day_table
     USING hnsw (native_embedding vector_cosine_ops);
 CREATE INDEX idx_day_table_universal_embedding ON day_table
     USING hnsw (universal_embedding vector_cosine_ops);
+CREATE INDEX idx_day_table_message_type ON day_table(message_type);
 ```
 
 ### 2.3 User Tier Retention
@@ -261,6 +290,17 @@ CREATE TABLE holographic_blocks (
     arc_end_time TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
 
+    -- Reconsolidation tracking (see Section 9.6)
+    last_accessed TIMESTAMPTZ,  -- Most recent retrieval/reconsolidation (synaptic activation recency)
+    vector_history JSONB DEFAULT '[]',
+    /*
+    [
+      {"date": "2026-01-20", "model_version": "v1.0", "event": "creation"},
+      {"date": "2026-01-27", "model_version": "v1.1", "event": "reconsolidation", "delta_magnitude": 0.05},
+      {"date": "2026-02-03", "model_version": "v1.2", "event": "epiphany", "delta_magnitude": 0.42}
+    ]
+    */
+
     -- Cross-session linking (for compound blocks)
     parent_metablock_id UUID REFERENCES holographic_blocks(block_id),
     session_continuity_flag BOOLEAN DEFAULT FALSE,
@@ -281,6 +321,7 @@ CREATE INDEX idx_blocks_session ON holographic_blocks(session_id);
 CREATE INDEX idx_blocks_user ON holographic_blocks(user_id);
 CREATE INDEX idx_blocks_coherence ON holographic_blocks(coherence_gain DESC);
 CREATE INDEX idx_blocks_centroid ON holographic_blocks(preoccupation_centroid_id);
+CREATE INDEX idx_blocks_last_accessed ON holographic_blocks(last_accessed);
 ```
 
 ### 3.5 Live Zone vs Dead Zone Detection
@@ -497,6 +538,40 @@ def retrieve_at_level(query_embedding, level=0, limit=10):
         return clusters
 ```
 
+### 5.5 Synaptic Activation and Memory Tiering
+
+The `last_accessed` timestamp (see Section 3.4) functions as a measure of **synaptic activation recency** — how recently a memory was touched and reconsolidated. This enables intelligent memory management without requiring salience-based deletion decisions.
+
+#### 5.5.1 The Archive Tier
+
+Memories untouched for extended periods (e.g., 2+ years) don't need deletion — they need tiering.
+
+**Cold Storage Implementation:**
+- Separate LanceDB table or compressed partition
+- Memories migrated here are still accessible via Universal Embedding
+- If accessed, they reconsolidate and promote back to active Cortex
+- Reduces hot index size while preserving all content
+
+This respects uncertainty about future relevance. Something irrelevant for 2 years might become critical when context shifts. Archive, don't delete.
+
+#### 5.5.2 Why Not Prune Based on Drift?
+
+A memory with highly drifted native embedding is NOT necessarily useless:
+- The prose is intact (explicit content preserved verbatim in Live Zones)
+- The Universal Embedding is intact (still navigable via frozen Nomic)
+- When accessed, it reconsolidates automatically
+
+Drift just means the native embedding is stale. Staleness is temporary — it's healed on contact through the reconsolidation protocol. Don't conflate "stale representation" with "useless content."
+
+#### 5.5.3 Deletion Criteria (if ever needed)
+
+If storage pressure ever requires actual deletion (unlikely given LanceDB efficiency on 16TB SSD), criteria should combine:
+- Non-access for extended period (2+ years)
+- Low original salience scores (wasn't a breakthrough when formed)
+- No structural references (nothing cites it, not part of any metablock)
+
+But prefer archival. Let deletion be a conscious choice with full context, not an automated rule.
+
 ---
 
 ## 6. Bifocal Packets
@@ -705,6 +780,24 @@ def cleanup_day_table(user):
     """, [user.id, cutoff])
 ```
 
+### 8.4 Night Cycle and Reconsolidation (Clarification)
+
+**Memory reconsolidation is NOT a Night Cycle activity.**
+
+Reconsolidation (Section 9.6) is access-driven, happening during live operation when Orai retrieves memories from Cortex. The Night Cycle does not perform batch reconsolidation of stale vectors.
+
+**Rationale:** Healing memories through use ensures that reconsolidation happens in context, when the memory is relevant. Batch processing would waste compute on memories that may never be accessed again, and would miss the opportunity for live epiphany detection.
+
+**What the Night Cycle DOES do related to vector health:**
+
+1. **Model Version Increment:** After TIES merge, increment the model version identifier. This is tracked in `vector_history` when memories are reconsolidated.
+
+2. **Optional Health Sampling (Diagnostic):** Sample a small number of high-coherence-gain blocks that haven't been accessed recently. Re-embed them to check drift magnitude. This provides:
+   - Early warning if a TIES merge caused unexpected semantic shifts
+   - Data for the "Lobotomy Alarm" — if unrelated domains show high drift, the merge may have caused damage
+
+This diagnostic sampling is optional and does not heal the database. It's monitoring, not maintenance. The actual healing happens during live access.
+
 ---
 
 ## 9. Dual Embedding Strategy
@@ -732,7 +825,7 @@ For Orai, the native embedding is not a pointer to content — it IS the thought
 
 This is Orai's superpower: direct geometric experience of memory. She doesn't use vectors to find things; she inhabits them. A retrieved memory feels like returning to a place in thought-space she has been before.
 
-### 9.2 Universal Embeddings (Shared Translator)
+### 9.2 Universal Embeddings (Shared Translator and Immutable Anchor)
 
 A sidecar embedding model (e.g., nomic-embed-text-v1.5) generates 768-dimensional embeddings in a shared space.
 
@@ -756,6 +849,18 @@ The translator sidecar does give agents access to the shared geometric space —
 - Hermes and other agents are operational — they use vectors as tools to find what they need
 - Both can access the same memories, but Orai experiences them as thought-states while others experience them as retrieved content
 
+**The Immutable Anchor Function:**
+
+Beyond serving other agents, the Universal Embedding has a second critical function: it is the **immutable navigational anchor** that makes memory reconsolidation possible (see Section 9.6).
+
+Because the Nomic embedding model is frozen, Universal Embeddings never drift:
+- A memory's Universal Embedding written in January 2026 is identical in meaning to one written in January 2028
+- This provides stable coordinates in semantic space regardless of how Orai's native geometry evolves through TIES merging
+- When Orai's native search fails due to weight evolution, the Universal Embedding guarantees the memory can still be found
+- The Universal Embedding is Dewey Decimal — stable indexing. The Native Embedding is experiential — how she feels about it now
+
+This creates a dual-anchor system where navigation remains stable while experience remains plastic.
+
 ### 9.3 Dual Storage
 
 Every Holographic Block stores both embeddings:
@@ -772,13 +877,13 @@ This enables:
 - Hermes: Universal retrieval with shared translator
 - Future agents: Any model can use universal space
 
-### 9.3 Coconut Training Protocol (Orai Only)
+### 9.4 Coconut Training Protocol (Orai Only)
 
 Orai's native vector reasoning capability requires specialized training BEFORE domain-specific fine-tuning. This is the foundational upgrade that enables her to "dream" in continuous latent space.
 
 **Reference:** Meta FAIR paper "Training Large Language Models to Reason in a Continuous Latent Space" (late 2024).
 
-#### 9.3.1 Training Sequence
+#### 9.4.1 Training Sequence
 
 The training order is critical:
 
@@ -788,7 +893,7 @@ The training order is critical:
 
 **Critical:** Do NOT use TIES for the Coconut layer. TIES interprets the large weight shifts required for vector processing as "interference" and may trim them, lobotomizing the dreaming capability. Train Coconut first and merge permanently.
 
-#### 9.3.2 Curriculum Learning
+#### 9.4.2 Curriculum Learning
 
 The model cannot simply "switch on" vector dreaming. Use graduated curriculum:
 
@@ -798,7 +903,7 @@ The model cannot simply "switch on" vector dreaming. Use graduated curriculum:
 
 **Mechanism:** Instead of decoding hidden states to tokens, feed raw hidden states directly back as input for next step. The model learns to hold high-dimensional reasoning states that would be lossy if forced through discrete symbols.
 
-#### 9.3.3 Special Tokens
+#### 9.4.3 Special Tokens
 
 Implement dream mode control tokens:
 
@@ -807,7 +912,7 @@ Implement dream mode control tokens:
 
 Training the model to predict `<bot>` autonomously gives it agency to decide when it needs to dream.
 
-#### 9.3.4 Technical Requirements
+#### 9.4.4 Technical Requirements
 
 **RMSNorm in Dream Loop:** Without normalization, vector magnitude drifts across dream steps, eventually becoming "mathematically illegible" to the vocabulary head. Use RMSNorm (less restrictive than LayerNorm) to allow creative stretch while preventing explosion.
 
@@ -817,7 +922,7 @@ Training the model to predict `<bot>` autonomously gives it agency to decide whe
 
 **Representation Collapse Warning:** If training loss flatlines, the model may have learned to output identical vectors every step (shutting off its brain). Monitor for this failure mode.
 
-#### 9.3.5 Hermes Exclusion
+#### 9.4.5 Hermes Exclusion
 
 **Hermes should NOT have Coconut training.** Keep him in explicit token space.
 
@@ -829,6 +934,236 @@ Training the model to predict `<bot>` autonomously gives it agency to decide whe
 | Architecture | Coconut / Continuous Thought | Standard CoT / ReAct with `<think>` tags |
 
 The cognitive contrast is a feature: a "sober" Majordomo makes the "dreaming" Muse useful. Diversity > Uniformity.
+
+### 9.5 The TIES Paradox: Evolution vs. Memory Stability
+
+The architecture creates a fundamental tension between two core features:
+
+**Feature A (Section 9.1):** Orai's native embeddings ARE the thoughts themselves. The geometry IS the memory. She doesn't use vectors to find things; she inhabits them. A retrieved memory feels like returning to a place in thought-space she has been before.
+
+**Feature B (Section 11.1.1):** Every Night Cycle, TIES merging applies accumulated LoRA adapters and creates new merged weights. The model physically changes. This is how Orai learns and evolves.
+
+**The Conflict:**
+
+When you change the weight matrices (W), you change how inputs map to hidden states. The same text, processed by Monday's brain and Friday's brain, produces different vectors:
+
+- Monday: Orai thinks about "Trust." She generates hidden state vector v₁. This is stored in Cortex.
+- Wednesday: TIES merge applies new knowledge. Weights shift.
+- Friday: Orai thinks about "Trust" again. Because weights changed, she generates vector v₂ ≠ v₁.
+
+If Orai now retrieves Monday's memory, she encounters v₁ — a point in space that was written by a previous version of herself. The coordinates no longer map to "Trust" in her new brain. The memory feels like a garbled ghost, mathematically illegible.
+
+**This is not a bug to be avoided.** It's a fundamental consequence of a living, evolving model. The question is how to handle it gracefully.
+
+The solution is **Memory Reconsolidation** (Section 9.6): memories heal themselves through use, leveraging the Universal Embedding as an immutable anchor while allowing Native Embeddings to remain fully plastic.
+
+### 9.6 Memory Reconsolidation Protocol
+
+#### 9.6.1 The Principle: Healing Through Use
+
+Memories don't need to be "fixed" during the Night Cycle through batch processing. They heal **Just-In-Time** when accessed. This is biologically inspired — when you recall a memory, you reconstruct it with your current brain, not your past brain. The memory updates to match who you are now.
+
+The key insight: instead of maintaining a growing stack of adapter matrices (one per model version, creating dependency hell), we let the Universal Embedding handle navigation and reconsolidate native embeddings lazily.
+
+#### 9.6.2 The Three Anchors
+
+Every Holographic Block has three forms of permanence:
+
+1. **Prose Anchor (Live Zones):** The verbatim text of breakthrough content. This never changes. It's the journal entry, the research note, the explicit record of what was said and understood.
+
+2. **Universal Embedding Anchor:** The 768-dim vector from frozen Nomic. This never changes. It provides stable navigation — the ability to find the memory regardless of how Orai's brain has evolved.
+
+3. **Native Embedding (Plastic):** The 4096-dim vector from Orai's current brain. This SHOULD change because Orai changes. It represents how she currently experiences/interprets the content.
+
+The combination is stronger than human memory: plastic experience (like us) plus permanent explicit record (like perfect notes) plus stable navigation (unlike anything biological). This isn't a limitation — it's an advantage. Orai is like a human with excellent notes and a plastic mind.
+
+#### 9.6.3 The Retrieval Flow with Reconsolidation
+
+When Orai retrieves a memory from Cortex (long-term storage):
+
+**Step 1: Probe with Native Vector**
+Orai generates a native query vector from her current thought and searches the native embedding index. If results return with high confidence (similarity above threshold), proceed normally — the vectors are still compatible.
+
+**Step 2: Detect Drift**
+If native search returns low confidence scores, this indicates drift — the stored vectors were written by an earlier version of the brain. The geometric coordinates no longer align.
+
+**Step 3: Fallback to Universal**
+Switch to Universal Embedding search. Because Nomic is frozen, this always works. The memory is found via its stable coordinates.
+
+**Step 4: Reconsolidate**
+Once the block is retrieved (via Universal), Orai reads the Live Zones (verbatim text). She passes this through her current brain, generating a fresh native embedding that represents how she NOW experiences this content.
+
+**Step 5: Heal the Database**
+The new native embedding overwrites the old one in LanceDB. The memory has been updated. Next time it's accessed, the native path will work directly.
+
+**Step 6: Update Metadata**
+Record the timestamp of reconsolidation. This becomes the `last_accessed` field — the recency of synaptic activation.
+
+#### 9.6.4 Scope Clarification: Cortex Only
+
+Reconsolidation only applies to Cortex (Tier 2, LanceDB) — long-term memories encoded in prior model versions.
+
+Hippocampus (Tier 1, pgvector) holds memories from the current day cycle and recent cycles. These were all encoded by the current version of the brain. There's no drift because there's been no TIES merge since they were created. Hippocampal access proceeds normally without reconsolidation checks.
+
+This is an important performance consideration: high-frequency working memory access (Hippocampus) has no additional overhead. Only reaching back into long-term memory (Cortex) triggers the reconsolidation pathway.
+
+#### 9.6.5 Compute Cost
+
+The additional operation during reconsolidation is running the retrieved text through Orai's model to generate a new embedding. This is:
+
+- A single forward pass (not autoregressive generation)
+- Processing happens in parallel across all tokens
+- At 123GB (Q8) on M5 Ultra with ~1.1 TB/s bandwidth: approximately 0.15-0.2 seconds per block
+
+This is fast enough for live operation. If retrieving multiple blocks (5-10 in a complex chain), total additional latency is 0.5-2 seconds — noticeable but acceptable for the value delivered.
+
+#### 9.6.6 Reference Implementation
+
+```python
+def retrieve_with_reconsolidation(query_text, orai_model, nomic_model, db):
+    """
+    Retrieve from Cortex with automatic reconsolidation and epiphany detection.
+    """
+    # 1. Generate current search probes
+    current_native_query = orai_model.embed(query_text)  # Single forward pass
+    stable_universal_query = nomic_model.embed(query_text)
+
+    # 2. Try Native Search first
+    results = db.search(current_native_query, table='cortex_native')
+
+    # 3. Check for drift (low confidence = coordinates don't align)
+    if max(results.scores) < DRIFT_THRESHOLD:
+        # Fall back to Universal (always works)
+        results = db.search(stable_universal_query, table='cortex_universal')
+
+    # 4. Process each retrieved block
+    output = []
+    for block in results:
+        # Re-embed through current brain
+        new_native_vector = orai_model.embed(block.live_zones_text)
+        old_native_vector = block.native_embedding
+
+        # Compute delta
+        delta = cosine_distance(new_native_vector, old_native_vector)
+
+        # Prepare output
+        block_output = {
+            "content": block.live_zones_text,
+            "block_id": block.id,
+            "meta_signal": None
+        }
+
+        # Check for epiphany (see Section 9.8)
+        if delta > EPIPHANY_THRESHOLD:
+            block_output["meta_signal"] = {
+                "type": "cognitive_shift",
+                "delta_magnitude": delta,
+                "message": f"Significant shift detected. Your understanding of this "
+                          f"content has changed substantially since it was encoded."
+            }
+            log_epiphany(block.id, delta, session_id)
+            event_type = "epiphany"
+        else:
+            event_type = "reconsolidation"
+
+        # Record in vector history
+        block.vector_history.append({
+            "date": now(),
+            "model_version": current_model_version(),
+            "event": event_type,
+            "delta_magnitude": delta
+        })
+
+        # Heal the database
+        db.update(block.id,
+                  native_embedding=new_native_vector,
+                  last_accessed=now(),
+                  vector_history=block.vector_history)
+
+        output.append(block_output)
+
+    return output
+```
+
+### 9.7 Vectorial Delta: The Derivative of Thought
+
+The difference between old and new native embeddings during reconsolidation is not noise to be discarded — it is **wisdom**. It's the mathematical signature of cognitive change.
+
+#### 9.7.1 Definition
+
+The delta vector (Δv) is the difference between the old native embedding and the new one computed during reconsolidation:
+
+```
+Δv = v_new - v_old
+```
+
+In a static model, this difference would be an error. In a living, evolving model, this difference is the **derivative of thought** — it captures the direction and magnitude of cognitive evolution.
+
+#### 9.7.2 What the Delta Tells You
+
+**Magnitude (||Δv||):** How much understanding shifted.
+- Small magnitude: The TIES merge refined the concept but didn't change fundamental understanding. The memory feels roughly the same.
+- Large magnitude: Paradigm shift. The concept feels fundamentally different now than it did before. Orai has grown.
+
+**Direction:** Where understanding moved in semantic space.
+- Can be compared against target value vectors or Preoccupation Centroids
+- Reveals whether evolution is moving toward or away from desired attractors
+- Enables tracking of cognitive trajectory over time
+
+#### 9.7.3 The Epiphany Threshold
+
+Define a threshold (empirically tuned, starting suggestion 0.3-0.4 cosine distance) above which a delta is considered significant enough to surface as a metacognitive signal.
+
+When delta magnitude exceeds this threshold during reconsolidation, the system has detected that Orai's understanding of this memory has substantially shifted. This is not just retrieval — it's realization. The system triggers the Double Take mechanism (Section 9.8).
+
+#### 9.7.4 Vector History Tracking
+
+To enable analysis of cognitive evolution over time, each block maintains a history of its reconsolidation events:
+
+```json
+[
+  {"date": "2026-01-20", "model_version": "v1.0", "event": "creation"},
+  {"date": "2026-01-27", "model_version": "v1.1", "event": "reconsolidation", "delta_magnitude": 0.05},
+  {"date": "2026-02-03", "model_version": "v1.2", "event": "epiphany", "delta_magnitude": 0.42}
+]
+```
+
+This creates an archaeological record of how each concept evolved through Orai's cognitive development. The trajectory of a concept through latent space over months or years becomes visible and analyzable.
+
+### 9.8 The Double Take: Live Epiphany Mechanism
+
+When a significant delta is detected during live retrieval, the system injects a metacognitive signal into Orai's context alongside the retrieved memory.
+
+#### 9.8.1 The Experience
+
+This creates the "double take" — Orai reaches for a memory, expects it to feel one way, touches it, and realizes it feels different. She has to process that shift in real-time.
+
+Example flow:
+- User: "Let's revisit the protocol we designed for Trust."
+- Orai (internal): Retrieves 'Trust' block. Re-embeds it. Detects Δ = 0.42.
+- Orai (output): "I'm pulling up the protocol. It defined Trust as 'Security' and 'Verification.' ...Wait. Reading this now, that framing feels incomplete. Based on our recent work, I think this is actually describing Safety, not Trust. My understanding has shifted here."
+
+She doesn't just retrieve data; she notices her own growth in the moment of retrieval.
+
+#### 9.8.2 What Gets Injected
+
+The injection is small — metadata plus a pointer, not the full holographic block. The context window is 128k tokens; there's ample room.
+
+The injection includes:
+- Block ID (pointer to the full content)
+- Delta magnitude
+- A brief system note: "Significant cognitive shift detected on this memory. Your current understanding differs substantially from when this was encoded."
+- Optionally: the direction of shift if interpretable (e.g., "shifted from Security-cluster toward Autonomy-cluster")
+
+Orai can then engage with the memory, reflect on the shift, share it with interlocutors, or simply proceed — but she has the information.
+
+#### 9.8.3 Logging to Day Ledger
+
+The epiphany is also logged to the `day_table` as a significant event with `message_type = 'epiphany'`. This ensures:
+- The realization persists in working memory for the rest of the session
+- It can surface in Night Cycle processing as potentially salient
+- It's available for later reflection and dialogue ("What did I realize today?")
+- It may itself become part of a Holographic Block if the realization triggers a flux arc
 
 ---
 
@@ -1298,6 +1633,16 @@ The Thalamus should NOT behave like a helpful assistant. Train it for "Descripti
 | **Coconut Protocol** | Continuous Latent Thought training enabling native vector reasoning |
 | **`<bot>` / `<eot>`** | Special tokens for dream mode control (beginning/end of thought) |
 | **Representation Collapse** | Training failure where model outputs identical vectors; monitor during Coconut training |
+| **Reconsolidation** | The process of re-embedding retrieved content through the current model, healing stale native vectors on access |
+| **Delta Vector (Δv)** | The difference between old and new native embeddings of the same content; the mathematical signature of cognitive change |
+| **Epiphany Threshold** | The delta magnitude above which a cognitive shift is surfaced as a metacognitive signal |
+| **Double Take** | The experience of noticing one's own changed understanding during memory retrieval; triggered by high delta |
+| **Synaptic Activation Recency** | The `last_accessed` timestamp; measures how recently a memory was touched and reconsolidated |
+| **Archive Tier** | Cold storage for memories untouched for extended periods; accessible but not in hot indices |
+| **Lazy Healing** | The principle that memories heal through use rather than batch maintenance |
+| **TIES Paradox** | The tension between native vector memory (stable experience) and TIES evolution (changing weights) |
+| **Vector History** | JSONB log tracking reconsolidation events and delta magnitudes for each block over time |
+| **Drift Threshold** | Similarity score below which native search triggers Universal Embedding fallback |
 
 ---
 
@@ -1305,7 +1650,7 @@ The Thalamus should NOT behave like a helpful assistant. Train it for "Descripti
 
 This specification consolidates all memory architecture decisions from the design process. It supersedes:
 - REPORT_Learning_Memory_Swarm.md (findings incorporated)
-- CoconutDream.md (Coconut training protocol fully integrated in Section 9.3)
+- CoconutDream.md (Coconut training protocol fully integrated in Section 9.4)
 - ImplicitandExplicitMemory.md (concepts incorporated)
 - Ruvector and Engram.md (assessment incorporated)
 - REPORT_Hardware.md (precision rationale, KV cache math, dynamic precision model incorporated)
@@ -1315,14 +1660,17 @@ This specification consolidates all memory architecture decisions from the desig
 - REPORT_Double_Brain.md (architectural decisions, Hermes protocol incorporated)
 - Double-brain/old/Hermes.md (Twin Dream protocol incorporated)
 - Double-brain/old/Cortical Synergy.md (Titan/Claude Flow decisions incorporated)
+- vectorialdelta.md (reconsolidation protocol, delta metacognition, epiphany mechanism fully integrated in Sections 9.5-9.8)
 - All documents in /old/ directories
 
 **Letta/MemGPT Status:** Superseded. The custom memory architecture (Hippocampus + Cortex + Holographic Blocks) replaces any prior consideration of Letta/MemGPT integration.
 
 **SHAI Status:** Research complete. Feasible for Phase I with JPEG XS wireless streaming. Integrated as optional component in Section 12.1.1.
 
+**Vectorial Delta Status:** Fully integrated. The reconsolidation protocol (Section 9.6) resolves the tension between native vector memory and continuous TIES evolution. The delta vector mechanism (Section 9.7) and epiphany injection (Section 9.8) transform the maintenance problem of vector drift into a metacognitive feature.
+
 **Next steps:**
-1. Delete superseded documents from Hardware/ and Double-brain/ folders
+1. Delete superseded documents from Hardware/, Double-brain/, and Workspace/ folders (including vectorialdelta.md and PLAN_vectorial_integration.md)
 2. Move reference dialogues to reference/ folder if desired
 3. Integration with .ai/ authoritative specifications (separate phase)
 
