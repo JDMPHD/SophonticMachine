@@ -100,7 +100,7 @@ CREATE INDEX idx_day_table_universal_embedding ON day_table
 
 ### 2.3 User Tier Retention
 
-Different users have different hippocampal retention spans based on coherence gain history.
+Different users have different hippocampal retention spans based on Arreté history.
 
 | Tier | Criteria | Raw Log Retention | Holographic Block Retention |
 |------|----------|-------------------|----------------------------|
@@ -194,8 +194,8 @@ Once a flux arc is detected:
    - **Dead zones**: Low salience filler — compressed to summaries
 3. **Dual Embedding**: Compute native (4096-dim) and universal (768-dim) embeddings for the block
 4. **Scoring**: Calculate P (Perplexity), C (Coherence), ID (Interrogative Distance) at three levels
-5. **Coherence Gain**: `(baseline_perplexity - final_perplexity) / baseline_perplexity`
-6. **TIES-merge Weight**: Composite of salience scores + coherence gain
+5. **Arreté**: `(baseline_perplexity - final_perplexity) / baseline_perplexity`
+6. **TIES-merge Weight**: Composite of salience scores + Arreté
 
 ### 3.4 Holographic Block Schema
 
@@ -287,7 +287,7 @@ CREATE INDEX idx_blocks_centroid ON holographic_blocks(preoccupation_centroid_id
 
 **Live Zone criteria** (preserve verbatim):
 - Perplexity spike > 2σ above local baseline
-- Coherence gain > 0.3 within the exchange
+- Arreté > 0.3 within the exchange
 - Interrogative Distance < 0.2 to active Preoccupation Centroid
 - Contains explicit insight markers (user confirmation, breakthrough language)
 
@@ -945,7 +945,7 @@ Second Mac Studio M5 Ultra (512GB) connected via Thunderbolt 5:
 | Term | Definition |
 |------|------------|
 | **Bifocal Packet** | Atomic memory unit containing prose + vector |
-| **Coherence Gain** | Reduction in perplexity across a flux arc, normalized |
+| **Arreté** | Reduction in perplexity across a flux arc, normalized |
 | **Cortex** | Long-term archival memory in LanceDB |
 | **Dead Zone** | Low-salience content compressed to summary |
 | **Dual Embedding** | Storing both native (Orai) and universal embeddings |

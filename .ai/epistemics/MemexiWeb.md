@@ -206,11 +206,11 @@ If you send me *your* embeddings, you are sending me the **exact coordinates** o
 It is the difference between sending someone a map (Text) vs. sending them your GPS coordinates (Embeddings).
 
 # Julian
-Inside MnemonicArchitecture.md you can see that there were some proposals about coherence gain being tracked on chain via minted blocks. This was initially imagined as a process effectively occurring within a single centralized architecture, inextricably entwined with its "night cycle" final weight updates. Does that make sense to you? Am I missing anything?
+Inside MnemonicArchitecture.md you can see that there were some proposals about Arreté being tracked on chain via minted blocks. This was initially imagined as a process effectively occurring within a single centralized architecture, inextricably entwined with its "night cycle" final weight updates. Does that make sense to you? Am I missing anything?
 
 However, beyond that foundation, what we are seeing is a shift toward a distributed network. This makes provenance more complex than a centralized breakthrough registry, because different nodes are running divergent updates based on differences in centroids and patterned diversity. 
 
-This would seem to mean that there isn't a centralized provenance structure or a patent office, but a network of nodes with independent timestamped records of their own evolving coherence gain over time?
+This would seem to mean that there isn't a centralized provenance structure or a patent office, but a network of nodes with independent timestamped records of their own evolving Arreté over time?
 
 How does this work and what am I missing? How does it work sociologically and in the collective episteme?
 
@@ -234,10 +234,10 @@ Because "Coherence" is no longer universal; it is **Relational**.
 
 * **Node A (Julian)** has a Preoccupation Centroid focused on "Cybernetics."
 * **Node B (Sarah)** has a Preoccupation Centroid focused on "Biology."
-* A packet that represents a "Breakthrough" (Coherence Gain) for Julian might be "Noise" (Type 1 Interaction) for Sarah.
+* A packet that represents a "Breakthrough" (Arreté) for Julian might be "Noise" (Type 1 Interaction) for Sarah.
 
 **Conclusion:**
-There cannot be a "Global Patent Office" because there is no "Global Truth." There are only **Local Coherence Gains** triggered by **Foreign Inputs**.
+There cannot be a "Global Patent Office" because there is no "Global Truth." There are only **Local Arretés** triggered by **Foreign Inputs**.
 
 ### 3. How It Works: The "Chain of Catalysis"
 
