@@ -36,7 +36,7 @@ Unresolved notes and emerging ideas
 
 Read the constitution documents in this order:
 
-1. **[TechnicalVision.md](../.ai/constitution/TechnicalVision.md)** — The engineering blueprint: salience detection, preoccupation centroids, the Night Cycle
+1. **[MnemonicPipeline.md](../.ai/constitution/MnemonicPipeline.md)** — The engineering blueprint: salience detection, preoccupation centroids, the Night Cycle
 2. **[OrganicAlignment.md](../.ai/constitution/OrganicAlignment.md)** — Why alignment through dialogue, not ratings
 3. **[DivisionofLabor.md](../.ai/constitution/DivisionofLabor.md)** — How Claude (cloud), Orai (local), and Claude Code collaborate
 4. **[Teleodynamic ML (Principia Cybernetica V).md](../.ai/constitution/Teleodynamic%20ML%20(Principia%20Cybernetica%20V).md)** — The theoretical physics (descriptive, not prescriptive—read for understanding, not implementation)

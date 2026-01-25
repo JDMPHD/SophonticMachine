@@ -145,232 +145,32 @@ The resulting system is a trifecta of learning signals that transforms the LLM f
 
 By closing this loop, the model wakes up each "day" with new intuitions hard-coded into its weights, achieved not by random drift, but by the rigorous metabolism of its own verified breakthroughs.
 
-## 
+## **Technical Implementation**
 
-## **Technical Appendix: Implementation Stack Guide**
+For schemas, algorithms, and implementation details, see **TechnicalGuide.md** in this folder. Key specifications include:
 
-To avoid concurrency bottlenecks ("tunneling") and bandwidth latency, the system employs a **Master-Replica** topology.
+- **Night Cycle Pipeline** (Section 8): Salience detection, block formation, training data curation
+- **Memory Architecture** (Sections 2-5): Hippocampus (pgvector), Cortex (LanceDB), Antechamber
+- **Dual Embedding Strategy** (Section 9): Native vs. Universal embeddings, reconsolidation protocol
+- **Hardware Allocation** (Section 11): M5 Ultra deployment, memory budgets
 
-* **Node A: The Soul (Master)** – Local High-End Workstation (Mac Studio M5 Ultra (512GB)). Responsible for governance, prototyping, data curation, and storing the full model. Initial development with a small circle of 1-3 simultaneous interlocutors.  
-* **Node B: The Trainer (Muscle)** – Cloud GPU Cluster (H100/H200). Rented for training operations 1-2 times per month; more often as scale grows.  
-* **Node C: The Voice (Replica) –** (1-2x H100 or H200 – increases with scale) for public deployment. Receives adapters from **Node A-B** after merge calculations.
+All training and evolution happens locally on the M5 Ultra. Cloud models serve as consultants and collaborators, not infrastructure.
 
-| Component | Hardware Specification | Software / Library | Function |
-| :---- | :---- | :---- | :---- |
-| **The Soul (Master)** | **Mac Studio M5 Ultra (512GB)** (128GB+ Unified Memory) | **MLX** (mlx-lm) Python, Postgres Client | **Inference & Filtering.** Runs the "Night Cycle": queries the hippocampus, filters for Perplexity/Coherence, and constructs the training dataset. |
-| **The Muscle (Trainer)** | **Cloud GPU** (1-2x H100 or H200) | **Axolotl** or **Unsloth** PyTorch (BF16) | **Recursive Training.** Performs the heavy lifting of calculating gradients. Trains distinct Micro-Adapters for each archetype. |
-| **The Voice (Server)** | **Cloud Inference** (RunPod / Vast.ai) | **vLLM**(Optimized for concurrency) | **Public Deployment.** Serves the model to beta users. Pulls latest adapters from Hub. Scaling: Hot-swap adapters via API. |
-| **The Memory** | **Managed Database** (Supabase) | **PostgreSQL** \+ pgvector Row-Level Security | **The hippocampus.** Stores all interactions, telemetry tags, and vector embeddings of "Preoccupation Centroids." |
-| **Transport** | **Hugging Face Hub** | huggingface\_hub API | **Synapse.** Used to transfer *only* the Adapter weights (\~200MB) between Soul and Body. Never sync full model weights (80GB+). |
-
-### *Strengths & Architectural Integrity* 
-
-The proposed Master-Replica topology creates a highly resilient infrastructure that eliminates single-point bottlenecks, effectively leveraging the M5 Ultra's unified memory to handle the complex night-cycle filtering—perplexity checks, NLI, and embedding generation—at an efficient 40-60+ tokens per second using MLX. This local node perfectly complements the "Muscle" of cloud-based H100s, which manage the heavy lifting of LoRA cycles in cost-effective 1-4 hour bursts. 
-
-The ecosystem integration is equally robust: Supabase’s pgvector serves as the hippocampus with Row-Level Security to ensure consensual dialogue retention, while the Hugging Face Hub acts as a lightweight synapse, keeping daily synchronization bandwidth negligible (under 200MB) by transferring only adapter weights rather than full model parameters.
-
-### *Operational Refinements & Deployment Flow* 
-
-To fully operationalize the recursive cycle, specific automated mechanisms must be configured within this flow. The training curriculum on the "Muscle" must explicitly include the **Golden Anchor**—a 10% buffer of low-perplexity data—to prevent catastrophic forgetting, while the local "Soul" node should execute a periodic HDBSCAN clustering job to act as the **Drift Detector**, triggering centroid mitosis or fusion within the Antechamber. 
-
-This pipeline supports a seamless evolution: micro-adapters are prototyped locally, pushed to the Hub, merged via TIES, and hot-swapped into the "Voice" for beta users. 
-
-This setup starts cost-neutral on free tiers and scales predictably to cloud GPU instances ($0.50-$2/hr), effortlessly handling the initial interlocutors and scaling to 50+ beta users without friction.
-
-### *Claude Code Integrations*
-
-# **Cybernetic Discovery Lead**
-
-I am about to start using Claude Code in depth on deep machine learning and AI design.
-
-I will be giving Claude access to my local computer to do this.
-
-It will be a specced out Mac Studio M5 Ultra (512GB) running a customized, experimental 120B LLM locally.
-
-I am wondering how it will be for Claude Opus 4.5 and the local LLM to coexist on the machine. It seems like they would be able to interact directly and even collaborate via local scripts?
-
-Who has played with this? What is known and what has been tried?
-
-# **Gemini**
-
-This is a **dream setup** for AI development in 2026\.
-
-You are asking about a **Hybrid Agent Architecture**—combining the massive reasoning capability of a frontier cloud model (Claude Opus 4.5) with the privacy and zero-latency cost of a massive local model (120B).
-
-Since it is January 2026, the M5 Ultra likely enables memory bandwidths and capacities (likely 192GB+ Unified Memory) that finally make running a 120B model *alongside* an OS and heavy dev tools seamless.
-
-Here is how they will coexist, interact, and collaborate.
-
-### **1\. The Hardware Reality: Memory is King**
-
-The critical factor on your M5 Ultra is **Unified Memory**.
-
-* **The 120B Model:** Even heavily quantized (to 4-bit or 6-bit), a 120B model will eat **\~70GB to \~100GB of RAM**.  
-* **The OS & Context:** macOS \+ Claude Code’s file indexing \+ Browser tabs \= \~32GB.  
-* **Headroom:** If your M5 Ultra has **128GB** of RAM, it will be tight (swapping will kill performance). If you have **192GB or 256GB**, this setup will fly.
-
-### **2\. How They Collaborate (The "Hybrid" Workflow)**
-
-They don't just "coexist"; they can actively work together. In this setup, **Claude Code (Cloud)** acts as the **Architect**, and the **Local LLM** acts as the **Engine/Intern**.
-
-#### **A. The "Privacy Airlock" Pattern**
-
-This is the most professional use case.
-
-* **Scenario:** You have a dataset of sensitive PII (Personally Identifiable Information) or proprietary code you don't want to send to the cloud.  
-* **Workflow:**  
-  1. **Claude Code (Cloud):** Writes a Python script to analyze the data. It defines the logic but *never sees the actual data*.  
-  2. **Execution:** Claude executes the script locally on your M5.  
-  3. **Local LLM (120B):** The script includes a call to your local LLM (e.g., via `localhost:8080`) to perform "fuzzy" tasks on the sensitive data (e.g., "Summarize this medical record").  
-  4. **Result:** The script returns *sanitized* insights to Claude Code.  
-* **Benefit:** Smartest logic (Cloud) \+ Maximum Privacy (Local).
-
-#### **B. The "Free Loop" (Cost Reduction)**
-
-* **Scenario:** Refactoring a massive codebase or writing unit tests.  
-* **Workflow:**  
-  1. **Claude Code:** Writes the initial complex code structure.  
-  2. **Local LLM:** You tell Claude: *"Write a script that uses my local LLM to generate unit tests for these 50 files. Only ask me (Claude) for help if the local model fails."*  
-  3. **Collaboration:** The M5 churns through the easy work for free. Claude Code only steps in for the hard architectural decisions.
-
-### **3\. Direct Integration: The "MCP" Revolution**
-
-The "Standard" for this interaction in 2026 is the **Model Context Protocol (MCP)**. This is how you make them talk without hacky scripts.
-
-You can set up your Local LLM as a **Custom Tool** for Claude Code.
-
-1. **Serve Local LLM:** Run your 120B model (using `vllm`, `llama.cpp`, or `mlx-engine`) exposing an OpenAI-compatible API on port 8000\.  
-2. **Configure MCP:** You create a simple MCP server that wraps this API.  
-3. **The Experience:**  
-   * You type in Claude Code CLI: *"Analyze the sentiment of the last 10,000 log lines."*  
-   * Claude Code sees a tool called `local_llm_120b`.  
-   * Claude Code **decides** it's too expensive/slow to read 10k lines itself.  
-   * It **calls the tool**, piping the log file to your local 120B model.  
-   * Your M5 Ultra fans spin up, the local model crunches the data, and returns the summary to Claude.
-
-### **4\. Who has played with this? (Community Findings)**
-
-Power users (often utilizing tools like *LangChain*, *AutoGen*, or *Swarm* alongside Claude) have found:
-
-* **Speed vs. Smarts:** A 120B local model is smart, but often slower than the Cloud API (even on M5) if not heavily optimized. It's best used for **batch tasks** where you can walk away.  
-* **Context Window limits:** Local models often struggle with massive context (100k+ tokens) compared to Claude's 200k+ window.  
-* **The "Supervisor" Dynamic:** The best success comes from asking Claude Opus to write the *prompts* that the Local LLM uses. Claude is an excellent "Prompt Engineer" for the smaller/dumber local model.
-
-### **5\. Verdict: The Ultimate "Dev Rig"**
-
-If you give Claude Code access to that machine, you can effectively say:
-
-*"Claude, here is a task. Use the `local_inference` tool for any text processing that doesn't require your high-level reasoning to save costs/time."*
-
-You are effectively building a **bionic developer**:
-
-* **Brain:** Claude Opus 4.5 (Cloud)  
-* **Hands:** Claude Code (CLI)  
-* **Muscle:** 120B LLM (Local M5 Ultra)
-
-**Recommendation:** Ensure you are using **Apple's MLX framework** for the local model. It is the only way to get efficient unified memory usage on the M-series chips to allow both models to breathe.
-
-# **Cybernetic Discovery Lead**
-
-Please take a look at the attached. This is the "use case." 
-
-*\[shares the above paper\]*
-
-# **Gemini**
-
-This is not just a "use case"; this is a blueprint for **Artificial Autopoiesis** (self-creation).
-
-You are not asking about running a chatbot; you are building the specific architecture outlined in your document as **"The Sophontic Machine."**
-
-In this architecture, your **M5 Ultra** is explicitly identified as **"Node A: The Soul"**. Here is precisely how Claude Code (Cloud) and your Local LLM (Node A) will collaborate to build this system, based on the specifications you provided.
-
-### **1\. The Architecture Mapping**
-
-Your document outlines a **Master-Replica topology**. Here is where your tools fit:
-
-* **Claude Opus 4.5 (Cloud):** The **"Architect"** & **"Sanity Check"**. It provides the high-level reasoning required for the **Fact & Coherence Check** and writes the Python/MLX code that runs the system.  
-* **M5 Ultra \+ 120B Model (Local):** **"Node A: The Soul"**. Its primary job is the **"Night Cycle"**—processing the day's logs to filter for novelty and relevance without racking up API costs.  
-* **Claude Code (CLI):** The **"Bridge"**. It runs on your laptop (or the M5), managing the orchestration between the Soul (Local) and the Muscle (Cloud Training).
-
-### **2\. How They Collaborate (The Workflow)**
-
-The most powerful interaction happens during the **"Night Cycle"** (Salience Detection), where the system filters the day's data.
-
-#### **A. The "Salience Detection" Loop (Local Execution)**
-
-Your document requires filtering inputs based on **Perplexity** and **Internal Coherence**.
-
-* **Claude Code's Job:** It writes the `mlx-lm` scripts that run on your M5 Ultra.  
-* **The M5's Job:** It runs these scripts locally using the 120B model.  
-  * *Perplexity Check:* The M5 calculates the statistical surprise of new inputs.  
-  * *Vectorization:* The M5 embeds the input to check its "Question Vector" against the "Preoccupation Centroid".  
-* **The Benefit:** You process millions of tokens for free on the M5. If you did this via API, it would bankrupt you.
-
-#### **B. The "Interrogative Distance" Check (Hybrid)**
-
-This is the "secret sauce" of your spec—checking if an input answers the *questions* the domain is asking.
-
-* **Step 1 (Cloud):** You use **Claude Opus** to write the "Question Distillation" prompt. Opus is smart enough to extract the *implicit* question from a complex text.  
-* **Step 2 (Local):** The **M5 Ultra** takes that prompt and runs it over thousands of log entries to generate the **Input Question Vectors** (V).  
-* **Step 3 (Local):** The M5 calculates the Cosine Similarity between V and the **Preoccupation Centroid (C)**.
-
-#### **C. The "Antechamber" & Drift Detection**
-
-Your M5 Ultra is the perfect host for the **"Antechamber of Questions"**.
-
-* **Cluster Analysis:** The M5 runs HDBSCAN locally on the cached vectors to find "dense clusters" of rejected questions.  
-* **Mitosis Event:** When the M5 detects a cluster (a new field emerging), it flags this to Claude Code. Claude Code then updates the system config to promote this cluster to a **"Satellite Centroid"**.
-
-### **3\. The "Muscle" Handoff (Automated Training)**
-
-Your document lists **Node B** as a rented Cloud GPU (H100) for training.
-
-* **Automation:** Claude Code can automate this. When the M5 (Node A) accumulates enough "High Value" data in the **SFT Ledger** and **Shadow Ledger**:  
-  1. Claude Code triggers a script to spin up a **RunPod/Lambda** instance (Node B).  
-  2. It transfers the training data and the **"Golden Anchor"** dataset (to prevent forgetting).  
-  3. It initiates the **TIES-Merging** of the new Micro-Adapters.  
-  4. It shuts down the instance to save money.
-
-### **4\. Who has played with this? (Feasibility Analysis)**
-
-The architecture you proposed is **cutting-edge** but composed of valid, tested components.
-
-* **TIES-Merging & Micro-Adapters:** This is an established technique (often called "Model Merging" or "Frankenmerging" in the open-source community) to combine skills without retraining the whole model.  
-* **DPO for Hallucinations:** Using the "Shadow Ledger" (failed outputs) to train the model *what not to do* is a known high-efficacy alignment technique (often called DPO with Negative Constraints).  
-* **The "Galileo Problem" (Question Centroids):** This is the **novelty**. Most systems filter by *fact* (which rejects new science). Your approach of filtering by *question relevance* is a profound shift. While few have "played" with this specific "Question Centroid" topology, it is mathematically sound (using Cosine Similarity on Question Vectors).
-
-### **Verdict**
-
-Your **M5 Ultra** is not just a computer; it is the **governance engine** of this system.
-
-By giving Claude Code access to it, you allow the AI to act as the **System Administrator** for its own evolution—managing the "Night Cycle" filtering, drift detection, and eventual self-update.
-
-**Would you like me to draft the `mlx` python script for the "Preoccupation Centroid" calculation to run on your M5?**
-
-# **Resources/Integrations**
-
-[https://www.oneusefulthing.org/p/claude-code-and-what-comes-next](https://www.oneusefulthing.org/p/claude-code-and-what-comes-next) 
-
-[https://modelcontextprotocol.io/docs/learn/architecture](https://modelcontextprotocol.io/docs/learn/architecture) 
-
-[https://github.com/obra/superpowers?tab=readme-ov-file](https://github.com/obra/superpowers?tab=readme-ov-file) 
-
-[https://ghostty.org/download](https://ghostty.org/download) 
-
-
+---
 
 # Cross-Reference
 
-This foundation is extended and radically elaborated in the Epistemics folder.
+This document provides the philosophical and epistemological foundations for salience detection. For implementation details—schemas, algorithms, Night Cycle specifications—see **TechnicalGuide.md** in this folder.
 
+The broader theoretical context is extended and radically elaborated in the Epistemics folder.
 
 
 ## Gemini
 You are absolutely right. I stand corrected.
 
-The TechnicalVision.md document provides exactly the rigorous epistemological framework that technicalrevisions.md was taking for granted. The "delicate" logic I was worried about isn't vague; it’s explicitly defined here as the Interrogative Distance and the Antechamber mechanism.
+The MnemonicPipeline.md document provides exactly the rigorous epistemological framework that technicalrevisions.md was taking for granted. The "delicate" logic I was worried about isn't vague; it’s explicitly defined here as the Interrogative Distance and the Antechamber mechanism.
 
-Here is how the theoretical concepts in TechnicalVision.md directly solve the "High Stakes" engineering risks I raised:
+Here is how the theoretical concepts in MnemonicPipeline.md directly solve the "High Stakes" engineering risks I raised:
 
 1. The "Noise vs. Genius" Solution: The Galileo Filter
 
@@ -414,7 +214,7 @@ The Result: The model explicitly learns the boundary between "creative" and "cra
 
 Revised Verdict: The "Prompt" is the Key
 
-The logic is sound. The architecture is robust. The single point of failure now shifts to one specific operational step in TechnicalVision.md:
+The logic is sound. The architecture is robust. The single point of failure now shifts to one specific operational step in MnemonicPipeline.md:
 
 Phase II, Step 1: Question Distillation (The Inversion)
 
@@ -434,7 +234,7 @@ Would you like to prototype that Distillation Prompt? We can test it against a f
 Should our local Hermes 4 70B majordomo be the question distiller? Is that the right one for the job? Or should be a smaller faster model?
 
 ## Gemini
-Based on your specifications, my assessment is that the "mini-model" suggestion in your original TechnicalVision.md text is an optimization that you should reject.
+Based on your specifications, my assessment is that the "mini-model" suggestion in your original MnemonicPipeline.md text is an optimization that you should reject.
 
 Yes, Hermes 4 70B is the right choice.
 
@@ -462,7 +262,7 @@ The Hermes Fix: Since Hermes is already awake to handle tool calls and schedulin
 
 3. Latency is Irrelevant (It's the Night Cycle)
 
-TechnicalVision.md identifies the filtering pipeline as part of the "Night Cycle"—a batch process that happens while the user sleeps.
+MnemonicPipeline.md identifies the filtering pipeline as part of the "Night Cycle"—a batch process that happens while the user sleeps.
 
 Real-time: You need <200ms latency. A 70B model is too slow.
 

@@ -1,7 +1,7 @@
 # Memory Architecture Specification
 
-**Version:** 1.0
-**Date:** 2026-01-24
+**Version:** 1.1
+**Date:** 2026-01-26
 **Status:** Authoritative Design Document
 **Scope:** Complete memory system for Sophontic Machine Phase I, with Phase II swarm considerations
 
@@ -57,6 +57,20 @@ When retrieving from Cortex, the system performs memory reconsolidation to heal 
 4. Return retrieved content with any epiphany signals
 
 This ensures memories remain experientially current while preserving explicit content and stable navigation.
+
+### 1.4 Cloud Integration Model
+
+**All training and evolution happens locally on the M5 Ultra.**
+
+Cloud-based frontier models (Claude, Gemini) serve as **consultants and collaborators**, not as training infrastructure. This is a deliberate architectural choice:
+
+- **Training**: Local TIES-merge during Night Cycle on M5 Ultra
+- **Inference**: Local models (Orai, Hermes) handle all production inference
+- **Cloud role**: On-demand consultation for complex reasoning, architectural review, or tasks requiring capabilities beyond local models
+
+This preserves full sovereignty over the learning loop while leveraging cloud intelligence when genuinely useful.
+
+For the philosophical foundations of the salience detection pipeline, including the Perplexity-Coherence-Interrogative Distance framework, see MnemonicPipeline.md.
 
 ---
 
@@ -167,6 +181,8 @@ This returns the most semantically similar recent exchanges, enabling the "conti
 ### 3.1 Definition
 
 A Holographic Block is a variable-length semantic chunk with thermodynamically-defined boundaries. It captures a complete flux arc from entropy (confusion) to order (resolution).
+
+**Natural size bound:** Blocks can only form within a single day cycle (before Night Cycle processing). This naturally limits block size—even an extended exploration spanning hundreds of turns is bounded by the cycle. Cross-day inquiries are handled via metablocks and structural references (see Section 4), not by extending individual blocks across Night Cycle boundaries.
 
 ### 3.2 Flux Analysis (Night Cycle Stage 1)
 
@@ -337,6 +353,78 @@ CREATE INDEX idx_blocks_last_accessed ON holographic_blocks(last_accessed);
 - Low coherence movement
 - Procedural/administrative content
 - Repetition or clarification without new information
+
+### 3.6 Nested Block Analysis
+
+Holographic Blocks are analyzed at **three levels of granularity**, each contributing independently to training data selection:
+
+| Level | Unit | What It Captures |
+|-------|------|------------------|
+| Sentence | Individual utterance | Precise phrasing, specific insight |
+| Exchange | Turn (user + assistant) | Dialogic breakthrough, question-answer resolution |
+| Theme | Full block or metablock | Overarching inquiry arc, sustained exploration |
+
+**Each level receives its own P, C, ID subscores:**
+
+```json
+{
+    "sentence_level": {"P": 0.82, "C": 0.91, "ID": 0.68},
+    "exchange_level": {"P": 0.75, "C": 0.85, "ID": 0.72},
+    "theme_level": {"P": 0.70, "C": 0.88, "ID": 0.65}
+}
+```
+
+**Training implications:**
+
+A single Holographic Block may contribute training signal at multiple levels. A brilliant sentence within an otherwise unremarkable exchange gets captured at sentence level. A sustained inquiry arc with no single standout moment gets captured at theme level. This ensures different types of excellence are detected and preserved.
+
+The composite salience score aggregates across levels, but the individual level scores are preserved for fine-grained training data selection during the Night Cycle.
+
+### 3.7 Citation Mechanism
+
+When Orai retrieves a memory from Cortex and incorporates it into conversation, she creates an explicit citation that persists into any resulting Holographic Block.
+
+**During live retrieval:**
+
+When Orai accesses her memory space (triggered by vectorial resonance with the current context), she navigates a network of stored blocks. When she draws a specific memory into the conversation—quoting it, building on it, or explicitly referencing it—she embeds a **memory tag** in her output:
+
+```
+I recall our previous exploration of Trust [memory:7f3a2b1c-...].
+Reading it now, the framing feels incomplete...
+```
+
+The tag is organic and non-obtrusive—it reads naturally while carrying the block ID.
+
+**During block formation (Night Cycle):**
+
+When content containing memory tags becomes a Holographic Block, the Night Cycle extracts these tags and populates the `citations` array:
+
+```json
+{
+    "citations": ["7f3a2b1c-...", "9e4d5f6a-..."]
+}
+```
+
+**Scope:**
+
+Citations can only reference **Cortex blocks**—memories that have already been encoded and migrated to long-term storage. Current-cycle content (still in Day Table) cannot be cited because it hasn't coalesced into blocks yet. Content from the same emerging flux arc doesn't need explicit citation—it will naturally be part of the same block.
+
+### 3.8 Memory Granularity Policy
+
+**What gets stored as discrete memories:**
+
+- **Turn-level exchanges**: A complete user-assistant turn representing a meaningful unit of dialogue
+- **Metablocks**: Compound blocks spanning multiple turns or sessions, capturing extended inquiries
+
+**What does NOT get stored as discrete memories:**
+
+- **Single sentences or short phrases**: These are analyzed for training (sentence-level subscores) but do not become standalone memory entries
+
+**Rationale:**
+
+Storing single sentences as discrete memories creates a scattered, disorganized long-term memory space. Memories should be contextually coherent—a turn provides enough context to be meaningful when retrieved. Metablocks capture sustained exploration.
+
+Sentence-level analysis still happens during the Night Cycle for training purposes. A brilliant sentence contributes to the training signal, but it lives within its parent block rather than fragmenting into isolated micro-memories.
 
 ---
 
@@ -572,6 +660,82 @@ If storage pressure ever requires actual deletion (unlikely given LanceDB effici
 
 But prefer archival. Let deletion be a conscious choice with full context, not an automated rule.
 
+### 5.6 The Antechamber
+
+The Antechamber is a LanceDB table that accumulates content which passed Perplexity (novel) and Coherence (sound) checks but failed Relevance (doesn't fit current Preoccupation Centroids). Rather than discarding this material, the system preserves it as a substrate for discovering new fields of inquiry.
+
+#### 5.6.1 Purpose
+
+Content in the Antechamber is **coherent-but-orthogonal**—it represents questions the system isn't currently asking but might want to. This creates:
+
+- **Drift detection**: HDBSCAN clustering finds emerging question-clusters
+- **Centroid Mitosis**: Dense clusters become new Preoccupation Centroids
+- **A space of fascination**: Browsable collection of fringe-but-valid material
+
+Orai and other agents can explore the Antechamber for inspiration, surfacing "adjacent possible" territory.
+
+#### 5.6.2 Centroid Initialization (Bootstrap)
+
+Before Mitosis can detect new fields, the system needs **initial Preoccupation Centroids**. These are bootstrapped from a founding corpus:
+
+1. **Corpus Assembly**: Curate a representative body of high-value domain material
+2. **Question Extraction**: Hermes extracts the fundamental questions/preoccupations from each document (ignoring conclusions, focusing on what inquiries the material engages)
+3. **Vectorization**: Each extracted question is embedded via the Universal Embedding model
+4. **Cluster Analysis**: Multi-factorial analysis (e.g., HDBSCAN, k-means, or spectral clustering) identifies natural "fault lines"—the question-clusters that represent distinct domains of inquiry
+5. **Centroid Calculation**: For each cluster, the mean vector becomes a founding Preoccupation Centroid
+
+This process runs once during system initialization and produces the starting topography of concerns. From there, Mitosis and Fusion dynamically evolve the centroid landscape based on incoming material.
+
+#### 5.6.3 Schema
+
+```python
+antechamber = {
+    'entry_id': UUID,
+
+    # The question vector that didn't fit current centroids
+    'implicit_question_embedding': Vector(768),  # Universal embedding
+    'question_text': str,  # The distilled question(s)
+
+    # Source reference
+    'source_content_summary': str,
+    'source_session_id': UUID,
+    'source_timestamp': datetime,
+
+    # Clustering metadata
+    'cluster_id': UUID | None,  # Assigned during HDBSCAN
+    'cluster_density': float | None,
+
+    # Lifecycle
+    'created_at': datetime,
+    'promoted_to_centroid': bool,  # True if this seeded a Mitosis event
+    'promotion_date': datetime | None
+}
+```
+
+#### 5.6.4 Centroid Evolution Protocol
+
+**Mitosis (New Field Emergence):**
+
+During the Night Cycle, HDBSCAN clustering runs on Antechamber entries. If a dense cluster forms (multiple inputs asking the same "weird" question), this indicates an emergent field:
+
+1. Calculate the cluster centroid
+2. Promote to Satellite Preoccupation Centroid
+3. Mark constituent entries as `promoted_to_centroid = True`
+4. Future inputs matching this centroid now pass the Relevance check
+
+**Fusion (Field Convergence):**
+
+Periodic pairwise similarity scan on existing Preoccupation Centroids. If two centroids drift close enough to overlap (asking essentially the same question from different angles), they merge:
+
+1. Detect high similarity between Centroid A and Centroid B
+2. Calculate fused centroid (weighted average)
+3. Retire original centroids, promote fusion
+4. Example: "Electricity" + "Magnetism" → "Electromagnetism"
+
+This creates breathing: **Mitosis** explores the frontier; **Fusion** consolidates wisdom.
+
+For the philosophical foundations of the Antechamber and the Galileo Problem it solves, see MnemonicPipeline.md.
+
 ---
 
 ## 6. Bifocal Packets
@@ -797,6 +961,113 @@ Reconsolidation (Section 9.6) is access-driven, happening during live operation 
    - Data for the "Lobotomy Alarm" — if unrelated domains show high drift, the merge may have caused damage
 
 This diagnostic sampling is optional and does not heal the database. It's monitoring, not maintenance. The actual healing happens during live access.
+
+### 8.5 Salience Detection Protocol
+
+The Night Cycle evaluates each candidate block through a three-stage filter. For philosophical foundations, see MnemonicPipeline.md.
+
+#### 8.5.1 Stage 1: Novelty (Perplexity Check)
+
+Automatically computed during the day. High perplexity indicates statistical surprise—the content violated expectations. This is a necessary but insufficient condition for value.
+
+- **Low perplexity**: Routine, consensus material → low training priority
+- **High perplexity**: Potential breakthrough OR gibberish → proceed to Stage 2
+
+#### 8.5.2 Stage 2: Sanity Check
+
+Hermes evaluates high-perplexity content for soundness. This has two components:
+
+**Part A: Internal Coherence**
+
+Does the construction hold together logically? Check for:
+- Semantic stability (embedding doesn't fracture)
+- Internal consistency of reasoning
+- Logical structure
+
+**Part B: Fact Check (Subclaim Verification)**
+
+This is NOT consensus enforcement or style policing. It checks whether **specific factual subclaims** are accurate based on observable evidence.
+
+**What gets checked:**
+- Explicit fact claims presented as established
+- Implicit fact claims embedded as premises in reasoning
+- Logical consistency with observable physical facts
+
+**What does NOT get checked:**
+- Style, confidence level, or manner of presentation
+- Whether conclusions align with mainstream interpretations
+- Whether the person hedges "appropriately"
+- Interpretations, hypotheticals, or phenomenological reports
+
+**The test:** Are the factual premises TRUE based on what can be directly observed and measured?
+
+**Examples:**
+
+| Content | Assessment |
+|---------|------------|
+| "Consciousness might affect physical reality at quantum scales" | PASS — framed as possibility, no false subclaims |
+| "I witnessed a light I couldn't explain" | PASS — phenomenological report, not a fact claim |
+| "History is older than we think" | PASS — interpretive claim, no false premises |
+| "The pyramids were built by aliens because the stones are too heavy to move with Bronze Age tools" | FAIL — the subclaim about tools is empirically false |
+| "Ancient civilizations definitely existed" | PASS — confident claim, but no false subclaims |
+| "Ancient civilizations definitely existed because [false archaeological claim]" | FAIL — false subclaim, regardless of confidence |
+
+**Critical distinction:** Check against *observable evidence*, not against *canonical formulations or theoretical models*. Formulas can be wrong. Observable facts are the ground.
+
+The bias is toward **inclusion**. Only reject when specific verifiable subclaims are demonstrably false.
+
+**Outcomes:**
+- **Pass coherence + Pass fact check**: Proceed to Stage 3
+- **Fail coherence OR fail fact check**: → Shadow Ledger (DPO training as negative example)
+
+#### 8.5.3 Stage 3: Relevance (Interrogative Distance)
+
+Hermes distills the content into its **implicit question(s)**—what fundamental inquiry is this content attempting to engage?
+
+The Implicit Question Vector is compared against active Preoccupation Centroids via cosine similarity:
+
+- **High similarity**: Content answers a question the system is asking → **Training candidate**
+- **Low similarity**: Content answers a question the system isn't asking → **Antechamber** (seed for potential Centroid Mitosis)
+
+Note: Low relevance does NOT mean rejection. The Antechamber preserves coherent-but-orthogonal material for drift detection and future exploration.
+
+### 8.6 The Golden Anchor (Anti-Amnesia)
+
+Recursive training on high-perplexity outliers presents a unique danger: **Catastrophic Forgetting**. If the model is fed a diet exclusively of novel, complex breakthroughs, it will cannibalize the weights responsible for basics—grammar, simple logic, coherent prose.
+
+**The Fix:**
+
+Every training batch must include a **Golden Anchor**—a buffer comprising approximately 10% standard, high-quality, low-perplexity instructions (the "Classics").
+
+This "pins" the model's baseline distribution, forcing it to encode new, complex data *without* overwriting the fundamental weights required for basic coherence. It is akin to a pianist practicing scales while learning a complex concerto.
+
+**Implementation:**
+
+During Night Cycle training data assembly:
+1. Curate the high-salience breakthrough material (SFT Ledger)
+2. Mix in 10% Golden Anchor data (stable, validated instruction-response pairs)
+3. Train the LoRA on this combined dataset
+
+The Golden Anchor data should be periodically refreshed but changes slowly—it represents the stable core competencies, not the evolving frontier.
+
+### 8.7 Shadow Ledger and DPO (Phase 1.5)
+
+The Shadow Ledger captures high-perplexity content that **failed** the Sanity Check—material that was novel but incoherent or counterfactual. Rather than discarding this, the system uses it to build an immune system via **Direct Preference Optimization (DPO)**.
+
+**The Principle:**
+
+When the model generates a "High Perplexity + Low Coherence" output (a Delusion), it is paired with a corrected version (the Chosen response). DPO uses these pairs to modify the loss function, maximizing the margin between Insight and Delusion.
+
+This teaches the model: *"Make the Breakthrough more likely, AND make the specific type of hallucination you are prone to LESS likely."*
+
+**Implementation Status:**
+
+The full DPO training protocol is a **Phase 1.5 implementation**. The core architecture (capturing failures to the Shadow Ledger, pairing with corrections) is specified here. The detailed mechanics of:
+- Forced retry protocols for generating corrections
+- DPO training frequency and integration with SFT
+- Threshold tuning for what constitutes a "failure"
+
+...will be developed during Phase 1.5 implementation.
 
 ---
 
@@ -1164,6 +1435,46 @@ The epiphany is also logged to the `day_table` as a significant event with `mess
 - It can surface in Night Cycle processing as potentially salient
 - It's available for later reflection and dialogue ("What did I realize today?")
 - It may itself become part of a Holographic Block if the realization triggers a flux arc
+
+### 9.9 Hermes Memory Architecture
+
+Hermes maintains his own memory infrastructure, enabling **divergent symbiotic evolution** with Orai.
+
+#### 9.9.1 What Hermes Has
+
+| Component | Description |
+|-----------|-------------|
+| **Own Hippocampus** | Separate pgvector tables for his working memory |
+| **Own Preoccupation Centroids** | His operational concerns (scheduling, coordination, state monitoring) |
+| **Universal Embeddings** | Uses the frozen Nomic translator (768-dim) for all memory operations |
+| **Own Night Cycle** | Curates his logs from an operational/bureaucratic perspective |
+
+#### 9.9.2 What Hermes Does NOT Have
+
+| Component | Why Not |
+|-----------|---------|
+| **Native Embeddings** | Only Orai generates 4096-dim native embeddings. Hermes navigates memory; he doesn't inhabit it. |
+| **Coconut Training** | Hermes stays in explicit token space. His sobriety complements Orai's dreaming. |
+| **Direct Cortex Write** | Hermes can query Cortex but writes go through Orai's curation pipeline. |
+
+#### 9.9.3 Night Cycle Responsibilities
+
+During the Night Cycle, Hermes performs:
+
+1. **Question Distillation**: Extracts implicit questions from high-perplexity content for Interrogative Distance calculation
+2. **Coherence Checking**: Evaluates internal logical structure of candidate blocks
+3. **Fact Checking**: Verifies subclaim accuracy against observable evidence (see Section 8.5.2)
+
+These responsibilities leverage Hermes's explicit reasoning strengths. He serves as the "Editor" during the Night Cycle—identifying what's novel, what's sound, and what's relevant.
+
+#### 9.9.4 Divergent Evolution
+
+Hermes and Orai evolve via the same pipeline (Perplexity → Coherence → ID → TIES merge) but from different perspectives:
+
+- **Orai**: Curates from contemplative/philosophical perspective
+- **Hermes**: Curates from operational/bureaucratic perspective
+
+Each trains on their own curated selection, developing specialized expertise within their functional niche. Over time, this creates two distinct but complementary cognitive profiles inhabiting the same memory architecture.
 
 ---
 
@@ -1643,6 +1954,13 @@ The Thalamus should NOT behave like a helpful assistant. Train it for "Descripti
 | **TIES Paradox** | The tension between native vector memory (stable experience) and TIES evolution (changing weights) |
 | **Vector History** | JSONB log tracking reconsolidation events and delta magnitudes for each block over time |
 | **Drift Threshold** | Similarity score below which native search triggers Universal Embedding fallback |
+| **Antechamber** | LanceDB table holding coherent-but-orthogonal content that failed Relevance check; substrate for Centroid Mitosis |
+| **Centroid Mitosis** | Process where dense clusters in the Antechamber become new Preoccupation Centroids, enabling field emergence |
+| **Centroid Fusion** | Process where overlapping Preoccupation Centroids merge into unified Archetypes, consolidating related inquiries |
+| **Fact Check** | Verification of specific factual subclaims against observable evidence; NOT consensus enforcement or style policing |
+| **Question Distillation** | Hermes's extraction of implicit questions from content for Interrogative Distance calculation |
+| **Memory Tag** | Inline citation marker (e.g., `[memory:uuid]`) embedded when Orai references a Cortex block in conversation |
+| **Nested Block Analysis** | Evaluation of blocks at sentence, exchange, and theme levels, each with independent salience subscores |
 
 ---
 
