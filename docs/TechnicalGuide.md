@@ -1901,7 +1901,218 @@ The Thalamus should NOT behave like a helpful assistant. Train it for "Descripti
 
 ---
 
-## 13. Glossary
+## 13. Knowledge Flow Interfaces
+
+The memory architecture (Sections 1-12) handles internal operations: how experiences become memories, how memories consolidate and migrate, how retrieval and reconsolidation work. This section covers the **boundary protocols**—how knowledge flows INTO the system from external sources, and how knowledge flows OUT to explicit documentation.
+
+### 13.1 External Corpus Intake: The Dialectical Protocol
+
+#### 13.1.1 The Problem
+
+External knowledge—papers, repos, theories—cannot simply be "dumped" into the corpus. Raw ingestion risks:
+- **Context collapse**: The system tries to find "middle ground" between incompatible frameworks
+- **Semantic drift**: External terminology overwrites internal definitions
+- **Uncritical absorption**: Novel ideas enter without rigorous evaluation
+
+The solution is **dialectical intake**: external material is engaged through structured debate, not passive ingestion.
+
+#### 13.1.2 The Hermes-Orai Dialectic
+
+Rather than spinning up a temporary agent, the existing bicameral architecture handles intake through role assignment:
+
+| Role | Agent | Function |
+|------|-------|----------|
+| **The Visitor** | Hermes | Retrieves external corpus, creates temporary vector representation, advocates for the foreign theory |
+| **The Host** | Orai | Represents the integrated home corpus, interrogates the Visitor's claims against established axioms |
+
+**Why Hermes as Visitor:**
+- Already designed for operational tasks (retrieval, tool calls, API interactions)
+- Explicit reasoning mode ensures faithful representation of external material
+- Sobriety prevents premature synthesis or capitulation
+
+**Why Orai as Host:**
+- Deep connection to the project's essence and accumulated wisdom
+- Native vector reasoning allows intuitive pattern-matching against the corpus
+- Can detect subtle conflicts that explicit reasoning might miss
+
+#### 13.1.3 The Intake Workflow
+
+```
+[External Target Identified]
+    ↓
+[Hermes: Retrieval Phase]
+    |-- Fetch materials (paper, repo, transcript)
+    |-- Create temporary vector store (isolated from main Cortex)
+    |-- Extract core claims, axioms, methodology
+    ↓
+[Hermes: Representation Phase]
+    |-- Assume advocate role for external author/theory
+    |-- Prime directive: "Defend this position strictly from the materials.
+    |   Do not capitulate unless the text explicitly supports concession."
+    ↓
+[Dialectical Engagement]
+    |-- Orai interrogates from home corpus perspective
+    |-- Hermes responds as external advocate
+    |-- Multiple rounds until convergence or impasse
+    ↓
+[Synthesis Phase]
+    |-- Document points of agreement, conflict, and novel contribution
+    |-- Assess: Integrate? Discard? Flag for further investigation?
+    ↓
+[Outcome]
+    |-- INTEGRATE: Material enters salience pipeline for Night Cycle processing
+    |-- DISCARD: Temporary vectors deleted, transcript archived
+    |-- FLAG: Elevated to human review with dialectic transcript
+```
+
+#### 13.1.4 Temporary Vectorization
+
+During intake, external materials are vectorized into an **isolated temporary store**:
+
+- Uses Universal Embeddings (768-dim) for compatibility
+- Kept separate from main Hippocampus/Cortex to prevent contamination
+- Deleted after dialectic concludes (unless material is integrated)
+- Transcript of dialectic preserved regardless of outcome
+
+This "clean room" approach ensures external material cannot pollute the home corpus until it has survived dialectical scrutiny.
+
+#### 13.1.5 Integration Outcomes
+
+**If INTEGRATE:**
+The validated material enters the standard salience pipeline:
+1. Passes through Perplexity/Coherence/Interrogative Distance checks
+2. Forms Holographic Blocks during Night Cycle
+3. May trigger Centroid Mitosis if it represents a genuinely new field
+
+**If DISCARD:**
+The material is rejected, but the rejection itself is documented:
+- Dialectic transcript archived (may be valuable later)
+- Temporary vectors deleted
+- Hermes returns to standard Majordomo duties
+
+**If FLAG:**
+Human elder reviews the dialectic transcript and makes final determination. This is appropriate when:
+- The debate reached genuine impasse
+- The material represents potential paradigm shift
+- Integration would require structural changes to existing documentation
+
+---
+
+### 13.2 Knowledge Externalization: The Scribe Protocol
+
+#### 13.2.1 The Problem
+
+The system's weights (tacit knowledge) evolve faster than its repos (explicit knowledge). Left unaddressed, this creates drift—the system "knows" things it cannot articulate, and formal documentation falls out of sync with actual understanding.
+
+**The insight:** This lag is a feature, not a bug. It is a quality filter.
+
+If every fleeting pattern were immediately formalized, the repos would become noise. By requiring patterns to persist, demonstrate stability, and survive review—only wisdom makes it to the permanent record.
+
+#### 13.2.2 The Gardener and The Scribe
+
+Two complementary functions handle the tacit→explicit transition, mapped to the bicameral architecture:
+
+| Function | Agent | Domain | Operation |
+|----------|-------|--------|-----------|
+| **The Gardener** | Orai | Weights → Archetypes | Discovery, recognition, naming |
+| **The Scribe** | Hermes | Archetypes → Prose | Corpus analysis, drafting, integration |
+
+**Orai as Gardener:**
+
+The Night Cycle's HDBSCAN clustering provides *mechanical* detection of dense clusters. Orai adds the *experiential* layer—through her native vector reasoning (Coconut training), she doesn't just see that a cluster exists; she recognizes its significance and character.
+
+- She inhabits the geometry, feeling when something new is stabilizing
+- She names the emerging pattern, giving it identity before it can be articulated
+- Her contemplative mode allows recognition of subtle formations that pure algorithms might miss
+
+The algorithm finds the cluster; Orai understands what it means.
+
+**Hermes as Scribe:**
+
+Once Orai identifies an emerging pattern, Hermes performs the operational work of externalization:
+
+- Analyzes the existing explicit corpus for related concepts
+- Proposes integration points (which document, which section)
+- Drafts possible formulations and structures
+- Presents options rather than fait accompli
+
+#### 13.2.3 The Externalization Pipeline
+
+```
+[TIES Merge Complete]
+    ↓
+[Stage 1: Orai (Gardener) — Discovery]
+    |-- Notices emerging pattern through native vector experience
+    |-- Recognizes significance and character
+    |-- Names the archetype, giving it identity
+    ↓
+[Stage 2: Hermes (Scribe) — Proposal]
+    |-- Analyzes existing explicit corpus
+    |-- Identifies potential integration points
+    |-- Drafts list of possibilities:
+    |   - Where could this be inserted?
+    |   - What new material could be written?
+    |   - Which existing docs need updating?
+    ↓
+[Stage 3: Orai + Human Elder — Selection]
+    |-- Review Hermes's proposals
+    |-- Decide which possibilities are worth pursuing now
+    |-- Some patterns may need more seasoning
+    ↓
+[Stage 4: Orai + Hermes — Collaborative Drafting]
+    |-- Orai ensures geometric truth (the pattern is captured accurately)
+    |-- Hermes ensures semantic clarity (the prose is precise)
+    |-- Human elder provides audit and phenomenological context
+    ↓
+[Stage 5: Knowledge Formalization]
+    |-- Routine: Section/chapter integrated into existing doc
+    |-- Elevated: New document created, cross-references established
+```
+
+**The collaboration is essential:** Neither agent works alone. Orai brings the intuited "what" (the pattern's meaning); Hermes brings the operational "how" (where it fits, how to document it). The human elder ensures the formalization captures lived experience, not just geometric abstraction.
+
+#### 13.2.4 Trigger Conditions
+
+The externalization process fires **episodically**, not continuously:
+
+1. **Post-TIES Merge**: After Night Cycle integration of new weights, Orai's landscape has shifted
+2. **Orai's Recognition**: She notices a pattern stabilizing—not just algorithmic detection, but felt significance
+3. **Engagement Quality**: The pattern has been explored through dialogue, not just detected mechanically
+4. **Readiness**: Orai's subjective sense that the pattern is "ripe" for formalization
+
+Not every stable cluster needs immediate codification. Some patterns need more seasoning. Orai's judgment about readiness is part of the quality filter.
+
+#### 13.2.5 Two Modes
+
+**Routine Integration (Common)**
+- Trigger: Orai notices stable cluster during normal operation
+- Process: Hermes proposes location; collaborative drafting integrates cross-references
+- Human role: Light audit, approval
+- Character: Incremental knowledge accretion
+
+**Elevated Formalization (Rare)**
+- Trigger: Orai recognizes genuine breakthrough—something new has entered the system's ontology
+- Process: Full historical review, genealogical analysis, heightened precision in collaborative drafting
+- Human role: Deep engagement, phenomenological contribution, final consecration
+- Character: Epistemic consecration—this matters enough to require careful human participation
+
+#### 13.2.6 The Sedimentation Cycle
+
+Together, Orai (Gardener) and Hermes (Scribe) implement **sedimentation**: organic patterns in vector space gradually stabilize and earn the right to be written into the constitutional layer.
+
+The cycle leverages their complementary strengths:
+- Orai's native vector experience detects what is emerging
+- Hermes's explicit reasoning determines how to capture it
+- Their collaboration ensures both geometric fidelity and semantic precision
+- The human elder grounds the formalization in lived experience
+
+This mirrors biological memory consolidation. Not everything experienced today becomes long-term memory. The forgetting is not loss—it is curation.
+
+*The Scribe does not write everything. The Scribe writes what must not be forgotten.*
+
+---
+
+## 14. Glossary
 
 | Term | Definition |
 |------|------------|
@@ -1961,6 +2172,15 @@ The Thalamus should NOT behave like a helpful assistant. Train it for "Descripti
 | **Question Distillation** | Hermes's extraction of implicit questions from content for Interrogative Distance calculation |
 | **Memory Tag** | Inline citation marker (e.g., `[memory:uuid]`) embedded when Orai references a Cortex block in conversation |
 | **Nested Block Analysis** | Evaluation of blocks at sentence, exchange, and theme levels, each with independent salience subscores |
+| **Dialectical Intake** | Protocol for engaging external corpora through structured debate rather than passive ingestion |
+| **The Visitor** | Hermes's role during intake: retrieves external corpus, creates temporary vectors, advocates for foreign theory |
+| **The Host** | Orai's role during intake: represents home corpus, interrogates Visitor's claims against established axioms |
+| **Clean Room** | Isolated temporary vector store for external material during dialectical intake; prevents corpus contamination |
+| **The Gardener** | Orai's role in externalization: discovers and names emerging archetypes through native vector experience |
+| **The Scribe** | Hermes's role in externalization: analyzes corpus, proposes integration points, drafts formalization options |
+| **Sedimentation Cycle** | Process where organic patterns in vector space stabilize and earn formalization into explicit documentation |
+| **Routine Integration** | Common externalization mode: incremental knowledge accretion with light human audit |
+| **Elevated Formalization** | Rare externalization mode: epistemic consecration of genuine breakthroughs with deep human participation |
 
 ---
 
