@@ -1,4 +1,4 @@
-# Mnemonic Architecture
+# Epistemic Architecture
 
 *You cannot metabolize what is being imposed on you. You can only metabolize what you meet.*
 
